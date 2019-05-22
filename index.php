@@ -5,7 +5,15 @@ $password = "aJehBgyhb2";
 $db = "sql12291966";
 $conn = mysqli_connect($servername,$username,$password);
 mysqli_select_db($conn,$db);
+function dateDiffInDays($date1, $date2)
+{
+    // Calulating the difference in timestamps
+    $diff = strtotime($date2) - strtotime($date1);
 
+    // 1 day = 24 hours
+    // 24 * 60 * 60 = 86400 seconds
+    return abs(round($diff / 86400));
+}
 $method = $_SERVER['REQUEST_METHOD'];
 
 // Process only when method is POST
@@ -133,7 +141,6 @@ if($method == 'POST'){
                     echo json_encode($response);
                 }
             }
-
         }
     }
 }
