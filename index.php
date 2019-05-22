@@ -16,13 +16,16 @@ if($method == 'POST'){
 
     $flag = "";
     $flag = $json->queryResult->outputContexts[0]->parameters->flag;
-    if(strcmp("login",$flag)){
-        $uname = $json->queryResult->outputContexts[1]->parameters->person->name;
-        $chkquery = "select * from Leave_Balance where username = $uname";
-        mysqli_query($conn,$query);
-        $result = mysqli_query($conn, $sql);
+    if(strcmp("login",$flag)==0){
+        $uname = $json->queryResult->outputContexts[0]->parameters->person->name;
+        $query = "select * from Leave_Balance where username = '$uname'";
+        $result = mysqli_query($conn, $query);
         if (mysqli_num_rows($result) > 0) {
-            echo "Hey ".$uname."! What do you want to do today?";
+            $speech1 = "Hey ".$uname."! What do you want to do today?";
+            $response = new \stdClass();
+            $response->fulfillmentText = $speech1;
+            $response->source = "webhook";
+            echo json_encode($response);
         }
         else{
             $speech1 = "Invalid user";
