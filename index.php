@@ -12,7 +12,9 @@ $method = $_SERVER['REQUEST_METHOD'];
 if($method == 'POST'){
     $requestBody = file_get_contents('php://input');
     $json = json_decode($requestBody);
+    $flag = "";
     $flag = $json->queryResult->outputContexts[0]->parameters->flag;
+
     if(flag.strcmp("check")){
         $uname = $json->queryResult->outputContexts[0]->parameters->person->name;
         /*$chkquery = "select * from Leave_Balance where username = $uname";
@@ -23,12 +25,12 @@ if($method == 'POST'){
         $response->source = "webhook";
         echo json_encode($response);
     }
-    elseif(flag.strcmp("apply")){
+    if(flag.strcmp("apply")){
         $uname = $json->queryResult->outputContexts[0]->parameters->person->name;
         /*$chkquery = "select * from Leave_Balance where username = $uname";
-        $query = "INSERT INTO Bookings(ID, NoM, DateTime) VALUES ('',$number,'$date_time')";*/
+        $query = "INSERT INTO Bookings(ID, NoM, DateTime) VALUES ('',$number,'$date_time')";
+        mysqli_query($conn,$query);*/
         $speech2 = "You want to apply leave";
-        mysqli_query($conn,$query);
         $response = new \stdClass();
         $response->fulfillmentText = $speech2;
         $response->source = "webhook";
