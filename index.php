@@ -15,7 +15,7 @@ if($method == 'POST'){
     $flag = "";
     $flag = $json->queryResult->outputContexts[0]->parameters->flag;
 
-    if(flag.strcmp("check")){
+    if(flag.strcmp("check")==1){
         $uname = $json->queryResult->outputContexts[0]->parameters->person->name;
         /*$chkquery = "select * from Leave_Balance where username = $uname";
         mysqli_query($conn,$query);*/
@@ -25,7 +25,7 @@ if($method == 'POST'){
         $response->source = "webhook";
         echo json_encode($response);
     }
-    if(flag.strcmp("apply")){
+    else if(flag.strcmp("apply")==1){
         $uname = $json->queryResult->outputContexts[0]->parameters->person->name;
         /*$chkquery = "select * from Leave_Balance where username = $uname";
         $query = "INSERT INTO Bookings(ID, NoM, DateTime) VALUES ('',$number,'$date_time')";
