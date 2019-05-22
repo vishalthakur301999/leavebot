@@ -13,10 +13,10 @@ if($method == 'POST'){
     $requestBody = file_get_contents('php://input');
     $json = json_decode($requestBody);
     $flag = "";
-    $flag = $json->queryResult->outputContexts->parameters->flag;
+    $flag = $json->queryResult->outputContexts[0]->parameters->flag;
 
     if(flag.strcmp("check")==0){
-        $uname = $json->queryResult->outputContexts->parameters->person->name;
+        $uname = $json->queryResult->outputContexts[0]->parameters->person->name;
         /*$chkquery = "select * from Leave_Balance where username = $uname";
         mysqli_query($conn,$query);*/
         $speech1 = "You have these many Leaves left";
@@ -26,7 +26,7 @@ if($method == 'POST'){
         echo json_encode($response);
     }
     else if(flag.strcmp("apply")==0){
-        $uname = $json->queryResult->outputContexts->parameters->person->name;
+        $uname = $json->queryResult->outputContexts[0]->parameters->person->name;
         /*$chkquery = "select * from Leave_Balance where username = $uname";
         $query = "INSERT INTO Bookings(ID, NoM, DateTime) VALUES ('',$number,'$date_time')";
         mysqli_query($conn,$query);*/
