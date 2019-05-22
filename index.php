@@ -38,12 +38,18 @@ if($method == 'POST'){
     }
     else if(strcmp("check",$flag)==0){
         $uname = $json->queryResult->outputContexts[1]->parameters->person->name;
-        $chkquery = "select * from Leave_Balance where username = $uname";
-        mysqli_query($conn,$query);
-        $result = mysqli_query($conn, $sql);
+        $chkquery = "select * from Leave_Balance where username = '$uname'";
+        $result = mysqli_query($conn, $chkquery);
         if (mysqli_num_rows($result) > 0) {
             $row = mysqli_fetch_assoc($result);
             $speech1 = "You have $row[CL_Balance] Casual Leaves and $row[PL_Balance] Paid Leaves Left";
+            $response = new \stdClass();
+            $response->fulfillmentText = $speech1;
+            $response->source = "webhook";
+            echo json_encode($response);
+        }
+        else{
+            $speech1 = "Invalid user";
             $response = new \stdClass();
             $response->fulfillmentText = $speech1;
             $response->source = "webhook";
