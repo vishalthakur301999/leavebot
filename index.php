@@ -100,14 +100,14 @@ if($method == 'POST'){
                     if (!$res) {
                         die('Invalid query: ' . mysqli_error($conn));
                     }
-                    $speech1 = "Leave Applied Successfully!";
+                    $speech1 = "Applied, Sent for your Manager approval";
                     $response = new \stdClass();
                     $response->fulfillmentText = $speech1;
                     $response->source = "webhook";
                     echo json_encode($response);
                 }
                 else{
-                    $speech1 = "Leave Application Unsuccessful, Insufficient Balance!";
+                    $speech1 = "Leave Application Unsuccessful, Insufficient Leave Balance!";
                     $response = new \stdClass();
                     $response->fulfillmentText = $speech1;
                     $response->source = "webhook";
@@ -130,14 +130,14 @@ if($method == 'POST'){
                     if (!$res) {
                         die('Invalid query: ' . mysqli_error($conn));
                     }
-                    $speech1 = "Leave Applied Successfully!";
+                    $speech1 = "Applied, Sent for your Manager approval";
                     $response = new \stdClass();
                     $response->fulfillmentText = $speech1;
                     $response->source = "webhook";
                     echo json_encode($response);
                 }
                 else{
-                    $speech1 = "Leave Application Unsuccessful, Insufficient Balance!";
+                    $speech1 = "Leave Application Unsuccessful, Insufficient Leave Balance!";
                     $response = new \stdClass();
                     $response->fulfillmentText = $speech1;
                     $response->source = "webhook";
@@ -160,14 +160,14 @@ if($method == 'POST'){
                     if (!$res) {
                         die('Invalid query: ' . mysqli_error($conn));
                     }
-                    $speech1 = "Leave Applied Successfully!";
+                    $speech1 = "Applied, Sent for your Manager approval";
                     $response = new \stdClass();
                     $response->fulfillmentText = $speech1;
                     $response->source = "webhook";
                     echo json_encode($response);
                 }
                 else{
-                    $speech1 = "Leave Application Unsuccessful, Insufficient Balance!";
+                    $speech1 = "Leave Application Unsuccessful, Insufficient Leave Balance!";
                     $response = new \stdClass();
                     $response->fulfillmentText = $speech1;
                     $response->source = "webhook";
