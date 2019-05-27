@@ -114,7 +114,7 @@ if($method == 'POST'){
                     echo json_encode($response);
                 }
             }
-            else if(strcmp("CL",$type)==0){
+             else if(strcmp("CL",$type)==0){
                 $balance = "$row[CL_Balance]";
                 $balance = (int)$balance;
                 if($dateDiff<=$balance){
