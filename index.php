@@ -50,7 +50,7 @@ if($method == 'POST'){
         $result = mysqli_query($conn, $chkquery);
         if (mysqli_num_rows($result) > 0) {
             $row = mysqli_fetch_assoc($result);
-            $speech1 = "You have $row[CL_Balance] Casual Leaves and $row[PL_Balance] Paid Leaves Left";
+            $speech1 = "CL: $row[CL_Balance], PL: $row[PL_Balance]";
             $response = new \stdClass();
             $response->fulfillmentText = $speech1;
             $response->source = "webhook";
