@@ -66,7 +66,7 @@ if($method == 'POST'){
         $to = $json->queryResult->outputContexts[0]->parameters->to;
         $to = substr($to,0,10);
         $dateDiff = dateDiffInDays($from, $to);
-        $speech1 = "Confirm Leave of $dateDiff days?";
+        $speech1 = "Confirm Leave of $dateDiff day/s?";
         $response = new \stdClass();
         $response->fulfillmentText = $speech1;
         $response->source = "webhook";
