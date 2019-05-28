@@ -1,5 +1,5 @@
 <?php
-$servername = "13.127.101.233:8081";
+$servername = "http://13.127.101.233:8081/phpmyadmin/index.php";
 $username = "DBUserSeshu";
 $password = "Seudb@2019";
 $db = "leave_db";
