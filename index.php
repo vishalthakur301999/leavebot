@@ -8,9 +8,7 @@ mysqli_select_db($conn,$db);
 function dateDiffInDays($date1, $date2)
 {
     // Calulating the difference in timestamps
-    $diff = (strtotime($date2) - strtotime($date1))+1;
-    // 1 day = 24 hours
-    // 24 * 60 * 60 = 86400 seconds
+    $diff = (strtotime($date2) - strtotime($date1));
     return abs(round($diff / 86400));
 }
 $method = $_SERVER['REQUEST_METHOD'];
@@ -80,6 +78,7 @@ if($method == 'POST'){
         $to = $json->queryResult->outputContexts[0]->parameters->to;
         $to = substr($to,0,10);
         $dateDiff = dateDiffInDays($from, $to);
+        $dateDiff = $dateDiff+1;
         $type = $json->queryResult->outputContexts[0]->parameters->type;
         $chkquery = "select * from Leave_Balance where username = '$uname'";
         $result = mysqli_query($conn, $chkquery);
