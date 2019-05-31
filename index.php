@@ -1,8 +1,8 @@
 <?php
-$servername = "db4free.net";
-$username = "vishalthakur";
-$password = "qwerty123";
-$db = "leave_db";
+$servername = "sql12.freemysqlhosting.net";
+$username = "sql12293814";
+$password = "4pgZjwWysA";
+$db = "sql12293814";
 $conn = mysqli_connect($servername,$username,$password);
 mysqli_select_db($conn,$db);
 function dateDiffInDays($date1, $date2)
