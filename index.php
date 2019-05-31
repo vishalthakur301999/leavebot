@@ -1,8 +1,8 @@
 <?php
-$servername = "sql12.freemysqlhosting.net";
-$username = "sql12293814";
-$password = "4pgZjwWysA";
-$db = "sql12293814";
+$servername = "db4free.net";
+$username = "vishalthakur";
+$password = "qwerty123";
+$db = "leave_db";
 $conn = mysqli_connect($servername,$username,$password);
 mysqli_select_db($conn,$db);
 function dateDiffInDays($date1, $date2)
@@ -11,8 +11,9 @@ function dateDiffInDays($date1, $date2)
     $diff = (strtotime($date2) - strtotime($date1));
     return abs(round($diff / 86400));
 }
+$method = $_SERVER['REQUEST_METHOD'];
 if($method == 'POST') {
-    $method = $_SERVER['REQUEST_METHOD'];
+
 // Process only when method is POST
     $requestBody = file_get_contents('php://input');
     $json = json_decode($requestBody);
@@ -83,7 +84,7 @@ if($method == 'POST') {
                 $balance = "$row[PL_Balance]";
                 $balance = (int)$balance;
                 if ($dateDiff <= $balance) {
-                    $query = "INSERT INTO Applied_Leaves(Lid,Eid,From_Date,To_Date,Leave_Type,Reason) VALUES ('',$row[Eid],'$from','$to','$type','')";
+                    $query = "INSERT INTO Applied_Leaves(Eid,From_Date,To_Date,Leave_Type,Reason) VALUES ($row[Eid],'$from','$to','$type','')";
                     $n = $balance - $dateDiff;
                     $query2 = "UPDATE Leave_Balance SET PL_Balance=$n WHERE Eid = '$row[Eid]'";
                     $res = mysqli_query($conn, $query);
@@ -110,7 +111,7 @@ if($method == 'POST') {
                 $balance = "$row[CL_Balance]";
                 $balance = (int)$balance;
                 if ($dateDiff <= $balance) {
-                    $query = "INSERT INTO Applied_Leaves(Lid,Eid,From_Date,To_Date,Leave_Type,Reason) VALUES ('',$row[Eid],'$from','$to','$type','')";
+                    $query = "INSERT INTO Applied_Leaves(Eid,From_Date,To_Date,Leave_Type,Reason) VALUES ($row[Eid],'$from','$to','$type','')";
                     $n = $balance - $dateDiff;
                     $query2 = "UPDATE Leave_Balance SET CL_Balance=$n WHERE Eid = '$row[Eid]'";
                     $res = mysqli_query($conn, $query);
@@ -137,7 +138,7 @@ if($method == 'POST') {
                 $balance = "$row[SL_Balance]";
                 $balance = (int)$balance;
                 if ($dateDiff <= $balance) {
-                    $query = "INSERT INTO Applied_Leaves(Lid,Eid,From_Date,To_Date,Leave_Type,Reason) VALUES ('',$row[Eid],'$from','$to','$type','')";
+                    $query = "INSERT INTO Applied_Leaves(Eid,From_Date,To_Date,Leave_Type,Reason) VALUES ($row[Eid],'$from','$to','$type','')";
                     $n = $balance - $dateDiff;
                     $query2 = "UPDATE Leave_Balance SET SL_Balance=$n WHERE Eid = '$row[Eid]'";
                     $res = mysqli_query($conn, $query);
@@ -163,11 +164,33 @@ if($method == 'POST') {
             }
         }
     }
+else if(strcmp("graph", $flag) == 0){
+     $chkquery1 = "select * from absentemployee where Time_period = 'today'";
+     $result1 = mysqli_query($conn, $chkquery1);
+     $row1=mysqli_fetch_assoc($result1);
+     $chkquery2 = "select * from absentemployee  where Time_period = 'tommorow'";
+     $result2 = mysqli_query($conn, $chkquery2);
+     $row2=mysqli_fetch_assoc($result2);
+     $chkquery3 = "select * from absentemployee  where Time_period = 'this_week'";
+     $result3 = mysqli_query($conn, $chkquery3);
+     $row3=mysqli_fetch_assoc($result3);
+     $chkquery4 = "select * from absentemployee  where Time_period = 'this_month'";
+     $result4 = mysqli_query($conn, $chkquery4);
+     $row4=mysqli_fetch_assoc($result4);
+     $speech1 = "Absent Employees";
+     $response = new \stdClass();
+     $response->fulfillmentText = $speech1;
+     $response->absentees->today = $row1['absentees'];
+     $response->absentees->tomorrow = $row2['absentees'];
+     $response->absentees->thisweek = $row3['absentees'];
+     $response->absentees->thismonth = $row4['absentees'];
+     $response->source = "webhook";
+     echo json_encode($response);
+ }
+ mysqli_close($conn);
 }
 else
 {
-    echo "Method not allowed";
+ echo "Method not allowed";
 }
 ?>
-
-
