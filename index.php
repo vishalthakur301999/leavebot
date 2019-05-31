@@ -177,12 +177,9 @@ else if(strcmp("graph", $flag) == 0){
      $chkquery4 = "select * from absentemployee  where Time_period = 'this_month'";
      $result4 = mysqli_query($conn, $chkquery4);
      $row4=mysqli_fetch_assoc($result4);
-     $speech1 = "Absent Employees";
+     $speech1 = "$row1['absentees'],$row2['absentees'],$row3['absentees'], $row4['absentees'";
      $response = new \stdClass();
-     $response->fulfillmentText->today = $row1['absentees'];
-     $response->fulfillmentText->tomorrow = $row2['absentees'];
-     $response->fulfillmentText->thisweek = $row3['absentees'];
-     $response->fulfillmentText->thismonth = $row4['absentees'];
+     $response->fulfillmentText = $speech1; 
      $response->source = "webhook";
      echo json_encode($response);
  }
