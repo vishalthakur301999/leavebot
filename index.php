@@ -84,7 +84,7 @@ if($method == 'POST') {
                 $balance = "$row[PL_Balance]";
                 $balance = (int)$balance;
                 if ($dateDiff <= $balance) {
-                    $query = "INSERT INTO applied_leavess(Eid,From_Date,To_Date,Leave_Type,Reason) VALUES ($row[Eid],'$from','$to','$type','')";
+                    $query = "INSERT INTO applied_leaves(Eid,From_Date,To_Date,Leave_Type,Reason) VALUES ($row[Eid],'$from','$to','$type','')";
                     $n = $balance - $dateDiff;
                     $query2 = "UPDATE leave_balance SET PL_Balance=$n WHERE Eid = '$row[Eid]'";
                     $res = mysqli_query($conn, $query);
@@ -111,7 +111,7 @@ if($method == 'POST') {
                 $balance = "$row[CL_Balance]";
                 $balance = (int)$balance;
                 if ($dateDiff <= $balance) {
-                    $query = "INSERT INTO applied_leavess(Eid,From_Date,To_Date,Leave_Type,Reason) VALUES ($row[Eid],'$from','$to','$type','')";
+                    $query = "INSERT INTO applied_leaves(Eid,From_Date,To_Date,Leave_Type,Reason) VALUES ($row[Eid],'$from','$to','$type','')";
                     $n = $balance - $dateDiff;
                     $query2 = "UPDATE leave_balance SET CL_Balance=$n WHERE Eid = '$row[Eid]'";
                     $res = mysqli_query($conn, $query);
@@ -138,7 +138,7 @@ if($method == 'POST') {
                 $balance = "$row[SL_Balance]";
                 $balance = (int)$balance;
                 if ($dateDiff <= $balance) {
-                    $query = "INSERT INTO applied_leavess(Eid,From_Date,To_Date,Leave_Type,Reason) VALUES ($row[Eid],'$from','$to','$type','')";
+                    $query = "INSERT INTO applied_leaves(Eid,From_Date,To_Date,Leave_Type,Reason) VALUES ($row[Eid],'$from','$to','$type','')";
                     $n = $balance - $dateDiff;
                     $query2 = "UPDATE leave_balance SET SL_Balance=$n WHERE Eid = '$row[Eid]'";
                     $res = mysqli_query($conn, $query);
