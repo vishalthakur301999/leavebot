@@ -176,7 +176,7 @@ else if(strcmp("graph", $flag) == 0){
      $chkquery4 = "select * from absentemployee  where Time_period = 'this_month'";
      $result4 = mysqli_query($conn, $chkquery4);
      $row4=mysqli_fetch_assoc($result4);
-	 $speech1 = "$row1[absentees],$row2[absentees],$row3[absentees], $row4[absentees]";
+	 $speech1 = "$row1[absentees],$row2[absentees],$row3[absentees],$row4[absentees]";
      $response = new \stdClass();
      $response->fulfillmentText = $speech1; 
      $response->source = "webhook";
