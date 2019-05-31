@@ -180,10 +180,10 @@ else if(strcmp("graph", $flag) == 0){
      $speech1 = "Absent Employees";
      $response = new \stdClass();
      $response->fulfillmentText = $speech1;
-     $response->absentees->today = $row1['absentees'];
-     $response->absentees->tomorrow = $row2['absentees'];
-     $response->absentees->thisweek = $row3['absentees'];
-     $response->absentees->thismonth = $row4['absentees'];
+     $response->webhook_payload->today = $row1['absentees'];
+     $response->webhook_payload->tomorrow = $row2['absentees'];
+     $response->webhook_payload->thisweek = $row3['absentees'];
+     $response->webhook_payload->thismonth = $row4['absentees'];
      $response->source = "webhook";
      echo json_encode($response);
  }
