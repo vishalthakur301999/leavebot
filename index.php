@@ -179,11 +179,10 @@ else if(strcmp("graph", $flag) == 0){
      $row4=mysqli_fetch_assoc($result4);
      $speech1 = "Absent Employees";
      $response = new \stdClass();
-     $response->fulfillmentText = $speech1;
-     $response->webhook_payload->today = $row1['absentees'];
-     $response->webhook_payload->tomorrow = $row2['absentees'];
-     $response->webhook_payload->thisweek = $row3['absentees'];
-     $response->webhook_payload->thismonth = $row4['absentees'];
+     $response->fulfillmentText->today = $row1['absentees'];
+     $response->fulfillmentText->tomorrow = $row2['absentees'];
+     $response->fulfillmentText->thisweek = $row3['absentees'];
+     $response->fulfillmentText->thismonth = $row4['absentees'];
      $response->source = "webhook";
      echo json_encode($response);
  }
