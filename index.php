@@ -117,7 +117,7 @@ if($method == 'POST') {
             echo json_encode($response);
         }
     } else if (strcmp("check", $flag) == 0) {
-        $uname = $json->queryResult->outputContexts[1]->parameters->person->name;
+        $uname = $json->queryResult->outputContexts[2]->parameters->person->name;
         $chkquery = "select * from leave_balance where username = '$uname'";
         $result = mysqli_query($conn, $chkquery);
         if (mysqli_num_rows($result) > 0) {
@@ -135,47 +135,49 @@ if($method == 'POST') {
             echo json_encode($response);
         }
     } else if (strcmp("confirm", $flag) == 0) {
-        $uname = $json->queryResult->outputContexts[1]->parameters->person->name;
+        $uname = $json->queryResult->outputContexts[2]->parameters->person->name;
         $from = $json->queryResult->outputContexts[0]->parameters->from;
         $from = substr($from, 0, 10);
         $to = $json->queryResult->outputContexts[0]->parameters->to;
         $to = substr($to, 0, 10);
         $dateDiff = dateDiffInDays($from, $to);
-        $i=1;
-        $chkquery = "select * from leave_balance where username = '$uname'";
-        $result = mysqli_query($conn, $chkquery);
-        if (mysqli_num_rows($result) > 0) {
-            while ($row = mysqli_fetch_assoc($result)) {
-                $chkquery2 = "select * from applied_leaves where Eid = '$row[Eid]'";
-                $result2 = mysqli_query($conn, $chkquery2);
-                if (mysqli_num_rows($result2) > 0) {
-                    while ($row2 = mysqli_fetch_assoc($result2)) {
-                        $Date1 = getDatesFromRange("$row2[From_Date]", "$row2[To_Date]");
-                        $Date2 = getDatesFromRange($from, $to);
-                        $result3 = array_intersect($Date1, $Date2);
-                        if (empty($result3)) {
-                        } else {
-                            $i=0;
-                            $speech1 = "Duplicate Dates Found with previously applied Leave. Please try Again";
-                            $response = new \stdClass();
-                            $response->fulfillmentText = $speech1;
-                            $response->source = "webhook";
-                            echo json_encode($response);
+            $i=1;
+            $chkquery = "select * from leave_balance where username = '$uname'";
+            $result = mysqli_query($conn, $chkquery);
+            if (mysqli_num_rows($result) > 0) {
+                while ($row = mysqli_fetch_assoc($result)) {
+                    $chkquery2 = "select * from applied_leaves where Eid = '$row[Eid]'";
+                    $result2 = mysqli_query($conn, $chkquery2);
+                    if (mysqli_num_rows($result2) > 0) {
+                        while ($row2 = mysqli_fetch_assoc($result2)) {
+                            $Date1 = getDatesFromRange("$row2[From_Date]", "$row2[To_Date]");
+                            $Date2 = getDatesFromRange($from, $to);
+                            $result3 = array_intersect($Date1, $Date2);
+                            if (empty($result3)) {
+                            } else {
+                                $i=0;
+                                $speech1 = "Duplicate Dates Found with previously applied Leave. Please try Again";
+                                $response = new \stdClass();
+                                $response->fulfillmentText = $speech1;
+                                $response->source = "webhook";
+                                echo json_encode($response);
+                            }
                         }
                     }
                 }
             }
-        }
-        if($i==1){
-            $speech1 = "Confirm Leave of $dateDiff day/s?";
-            $response = new \stdClass();
-            $response->fulfillmentText = $speech1;
-            $response->source = "webhook";
-            echo json_encode($response);
-        }
-    }else if (strcmp("apply", $flag) == 0) {
+            if($i==1){
+                $speech1 = "Confirm Leave of $dateDiff day/s?";
+                $response = new \stdClass();
+                $response->fulfillmentText = $speech1;
+                $response->source = "webhook";
+                echo json_encode($response);
+            }
+
+    } else if (strcmp("apply", $flag) == 0) {
         $uname = $json->queryResult->outputContexts[0]->parameters->person->name;
         $from = $json->queryResult->outputContexts[0]->parameters->from;
+        $remark = $json->queryResult->outputContexts[0]->parameters->any;
         $from = substr($from, 0, 10);
         $to = $json->queryResult->outputContexts[0]->parameters->to;
         $to = substr($to, 0, 10);
@@ -189,9 +191,9 @@ if($method == 'POST') {
                 $balance = "$row[PL_Balance]";
                 $balance = (int)$balance;
                 if ($dateDiff <= $balance) {
-                    $query = "INSERT INTO applied_leaves(Eid,From_Date,To_Date,Leave_Type,Reason) VALUES ($row[Eid],'$from','$to','$type','')";
+                    $query = "INSERT INTO applied_leaves(Eid,From_Date,To_Date,Leave_Type,Reason) VALUES ($row[Eid],'$from','$to','$type','$remark')";
                     $n = $balance - $dateDiff;
-                    $query2 = "UPDATE leave_balance SET PL_Balance=$n WHERE Eid = '$row[Eid]'";
+                    $query2 = "UPDATE leave_balance SET CL_Balance=$n WHERE Eid = '$row[Eid]'";
                     $res = mysqli_query($conn, $query);
                     if (!$res) {
                         die('Invalid query: ' . mysqli_error($conn));
@@ -216,9 +218,9 @@ if($method == 'POST') {
                 $balance = "$row[CL_Balance]";
                 $balance = (int)$balance;
                 if ($dateDiff <= $balance) {
-                    $query = "INSERT INTO applied_leaves(Eid,From_Date,To_Date,Leave_Type,Reason) VALUES ($row[Eid],'$from','$to','$type','')";
+                    $query = "INSERT INTO applied_leaves(Eid,From_Date,To_Date,Leave_Type,Reason) VALUES ($row[Eid],'$from','$to','$type','$remark')";
                     $n = $balance - $dateDiff;
-                    $query2 = "UPDATE leave_balance SET CL_Balance=$n WHERE Eid = '$row[Eid]'";
+                    $query2 = "UPDATE leave_balance SET CL_Balance=$n  WHERE Eid = '$row[Eid]'";
                     $res = mysqli_query($conn, $query);
                     if (!$res) {
                         die('Invalid query: ' . mysqli_error($conn));
@@ -243,9 +245,9 @@ if($method == 'POST') {
                 $balance = "$row[SL_Balance]";
                 $balance = (int)$balance;
                 if ($dateDiff <= $balance) {
-                    $query = "INSERT INTO applied_leaves(Eid,From_Date,To_Date,Leave_Type,Reason) VALUES ($row[Eid],'$from','$to','$type','')";
+                    $query = "INSERT INTO applied_leaves(Eid,From_Date,To_Date,Leave_Type,Reason) VALUES ($row[Eid],'$from','$to','$type','$remark')";
                     $n = $balance - $dateDiff;
-                    $query2 = "UPDATE leave_balance SET SL_Balance=$n WHERE Eid = '$row[Eid]'";
+                    $query2 = "UPDATE leave_balance SET CL_Balance=$n WHERE Eid = '$row[Eid]'";
                     $res = mysqli_query($conn, $query);
                     if (!$res) {
                         die('Invalid query: ' . mysqli_error($conn));
