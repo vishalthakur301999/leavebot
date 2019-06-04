@@ -290,6 +290,29 @@ if($method == 'POST') {
         $response->source = "webhook";
         echo json_encode($response);
     }
+    else if(strcmp("withdraw",$flag)==0){
+        $speech = "";
+        $uname = $json->queryResult->outputContexts[1]->parameters->person->name;
+        $chkquery = "select * from leave_balance where username = '$uname'";
+        $result = mysqli_query($conn, $chkquery);
+        if (mysqli_num_rows($result) > 0) {
+            while ($rowu = mysqli_fetch_assoc($result)) {
+            $chkquery = "select * from applied_leaves where Eid = '$rowu[Eid]'";
+            $result = mysqli_query($conn, $chkquery);
+            if (mysqli_num_rows($result) > 0) {
+                while ($row = mysqli_fetch_assoc($result)) {
+                    $speech = $speech.":"."$row[From_Date]".","."$row[To_Date]".","."$row[Leave_Type]";
+                }
+            }
+            }
+
+        }
+        echo $speech;
+        $response = new \stdClass();
+        $response->fulfillmentText = $speech;
+        $response->source = "webhook";
+        echo json_encode($response);
+    }
     mysqli_close($conn);
 }
 else
