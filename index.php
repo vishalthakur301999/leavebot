@@ -301,7 +301,7 @@ if($method == 'POST') {
             $result = mysqli_query($conn, $chkquery);
             if (mysqli_num_rows($result) > 0) {
                 while ($row = mysqli_fetch_assoc($result)) {
-                    $speech = $speech."$row[From_Date]".","."$row[To_Date]".","."$row[Leave_Type]".":";
+                    $speech = $speech."$row[Lid]".","."$row[From_Date]".","."$row[To_Date]".","."$row[Leave_Type]".":";
                 }
             }
             }
