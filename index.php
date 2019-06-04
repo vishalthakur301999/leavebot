@@ -135,7 +135,7 @@ if($method == 'POST') {
             echo json_encode($response);
         }
     } else if (strcmp("confirm", $flag) == 0) {
-        $uname = $json->queryResult->outputContexts[0]->parameters->person->name;
+        $uname = $json->queryResult->outputContexts[1]->parameters->person->name;
         $from = $json->queryResult->outputContexts[0]->parameters->from;
         $from = substr($from, 0, 10);
         $to = $json->queryResult->outputContexts[0]->parameters->to;
@@ -147,13 +147,13 @@ if($method == 'POST') {
         if (mysqli_num_rows($result) > 0) {
             while ($row = mysqli_fetch_assoc($result)) {
                 $chkquery2 = "select * from applied_leaves where Eid = '$row[Eid]'";
-                $result2 = mysqli_query($conn, $chkquery);
-                if (mysqli_num_rows($result) > 0) {
-                    while ($row2 = mysqli_fetch_assoc($result)) {
-                        $Date1 = getDatesFromRange($row2[From_Date], $row[To_Date]);
+                $result2 = mysqli_query($conn, $chkquery2);
+                if (mysqli_num_rows($result2) > 0) {
+                    while ($row2 = mysqli_fetch_assoc($result2)) {
+                        $Date1 = getDatesFromRange("$row2[From_Date]", "$row2[To_Date]");
                         $Date2 = getDatesFromRange($from, $to);
-                        $result = array_intersect($Date1, $Date2);
-                        if (empty($result)) {
+                        $result3 = array_intersect($Date1, $Date2);
+                        if (empty($result3)) {
                         } else {
                             $i=0;
                             $speech1 = "Duplicate Dates Found with previously applied Leave. Please try Again";
@@ -173,7 +173,7 @@ if($method == 'POST') {
             $response->source = "webhook";
             echo json_encode($response);
         }
-    } else if (strcmp("apply", $flag) == 0) {
+    }else if (strcmp("apply", $flag) == 0) {
         $uname = $json->queryResult->outputContexts[0]->parameters->person->name;
         $from = $json->queryResult->outputContexts[0]->parameters->from;
         $from = substr($from, 0, 10);
