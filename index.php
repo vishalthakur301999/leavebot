@@ -117,7 +117,7 @@ if($method == 'POST') {
             echo json_encode($response);
         }
     } else if (strcmp("check", $flag) == 0) {
-        $uname = $json->queryResult->outputContexts[2]->parameters->person->name;
+        $uname = $json->queryResult->outputContexts[1]->parameters->person->name;
         $chkquery = "select * from leave_balance where username = '$uname'";
         $result = mysqli_query($conn, $chkquery);
         if (mysqli_num_rows($result) > 0) {
