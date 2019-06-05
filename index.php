@@ -244,7 +244,7 @@ if($method == 'POST') {
     else if(strcmp("withdraw",$flag)==0){
         $speech = "";
         $uname = $json->queryResult->outputContexts[1]->parameters->eid;
-        $chkquery = "select * from empleavehistory where EmpID = '$uname'";
+        $chkquery = "select * from empleavehistory where EmpID = '$uname' AND Status = 'Pending Approval'";
         $result = mysqli_query($conn, $chkquery);
             if (mysqli_num_rows($result) > 0) {
                 while ($row = mysqli_fetch_assoc($result)) {
