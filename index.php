@@ -179,7 +179,7 @@ if($method == 'POST') {
             }
 
     } else if (strcmp("apply", $flag) == 0) {
-        $uname = $json->queryResult->outputContexts[0]->parameters->person->name;
+        $uname = $json->queryResult->outputContexts[0]->parameters->eid;
         $from = $json->queryResult->outputContexts[0]->parameters->from;
         $remark = $json->queryResult->outputContexts[0]->parameters->any;
         $from = substr($from, 0, 10);
@@ -187,93 +187,40 @@ if($method == 'POST') {
         $to = substr($to, 0, 10);
         $dateDiff = dateDiffInDays($from, $to);
         $type = $json->queryResult->outputContexts[0]->parameters->type;
-        $chkquery = "select * from leave_balance where username = '$uname'";
+        $chkquery = "select * from empleavebalance where EmpID = '$uname' and LeaveType = '$type'";
         $result = mysqli_query($conn, $chkquery);
         if (mysqli_num_rows($result) > 0) {
-            $row = mysqli_fetch_assoc($result);
-            if (strcmp("PL", $type) == 0) {
-                $balance = "$row[PL_Balance]";
+            while ($row = mysqli_fetch_assoc($result)) {
+                $balance = "$row[Balance]";
                 $balance = (int)$balance;
+                $t = date("Y-m-d");
                 if ($dateDiff <= $balance) {
-                    $query = "INSERT INTO applied_leaves(Eid,From_Date,To_Date,Leave_Type,Reason) VALUES ($row[Eid],'$from','$to','$type','$remark')";
+                    $query = "INSERT INTO empleavehistory(EmpID,From_Date,To_Date,Leave_Type,Reason,LeaveRequestedOn,Status) VALUES ('$uname','$from','$to','$type','$remark','$t','Pending Approval')";
                     $n = $balance - $dateDiff;
-                    $query2 = "UPDATE leave_balance SET CL_Balance=$n WHERE Eid = '$row[Eid]'";
+                    $taken = intval("$row[Taken]") + $dateDiff;
+                    $query2 = "UPDATE empleavebalance SET Balance='$n',Taken='$taken' WHERE EmpID = '$uname' AND LeaveType = '$type'";
                     $res = mysqli_query($conn, $query);
                     if (!$res) {
                         die('Invalid query: ' . mysqli_error($conn));
                     }
                     $res2 = mysqli_query($conn, $query2);
-                    if (!$res) {
+                    if (!$res2) {
                         die('Invalid query: ' . mysqli_error($conn));
                     }
                     $speech1 = "Applied, Sent for your Manager approval";
-                    $response = new \stdClass();
-                    $response->fulfillmentText = $speech1;
-                    $response->source = "webhook";
-                    echo json_encode($response);
-                } else {
-                    $speech1 = "Leave Application Unsuccessful, Insufficient Leave Balance!";
-                    $response = new \stdClass();
-                    $response->fulfillmentText = $speech1;
-                    $response->source = "webhook";
-                    echo json_encode($response);
-                }
-            } else if (strcmp("CL", $type) == 0) {
-                $balance = "$row[CL_Balance]";
-                $balance = (int)$balance;
-                if ($dateDiff <= $balance) {
-                    $query = "INSERT INTO applied_leaves(Eid,From_Date,To_Date,Leave_Type,Reason) VALUES ($row[Eid],'$from','$to','$type','$remark')";
-                    $n = $balance - $dateDiff;
-                    $query2 = "UPDATE leave_balance SET CL_Balance=$n  WHERE Eid = '$row[Eid]'";
-                    $res = mysqli_query($conn, $query);
-                    if (!$res) {
-                        die('Invalid query: ' . mysqli_error($conn));
-                    }
-                    $res2 = mysqli_query($conn, $query2);
-                    if (!$res) {
-                        die('Invalid query: ' . mysqli_error($conn));
-                    }
-                    $speech1 = "Applied, Sent for your Manager approval";
-                    $response = new \stdClass();
-                    $response->fulfillmentText = $speech1;
-                    $response->source = "webhook";
-                    echo json_encode($response);
-                } else {
-                    $speech1 = "Leave Application Unsuccessful, Insufficient Leave Balance!";
-                    $response = new \stdClass();
-                    $response->fulfillmentText = $speech1;
-                    $response->source = "webhook";
-                    echo json_encode($response);
-                }
-            } else if (strcmp("SL", $type) == 0) {
-                $balance = "$row[SL_Balance]";
-                $balance = (int)$balance;
-                if ($dateDiff <= $balance) {
-                    $query = "INSERT INTO applied_leaves(Eid,From_Date,To_Date,Leave_Type,Reason) VALUES ($row[Eid],'$from','$to','$type','$remark')";
-                    $n = $balance - $dateDiff;
-                    $query2 = "UPDATE leave_balance SET CL_Balance=$n WHERE Eid = '$row[Eid]'";
-                    $res = mysqli_query($conn, $query);
-                    if (!$res) {
-                        die('Invalid query: ' . mysqli_error($conn));
-                    }
-                    $res2 = mysqli_query($conn, $query2);
-                    if (!$res) {
-                        die('Invalid query: ' . mysqli_error($conn));
-                    }
-                    $speech1 = "Applied, Sent for your Manager approval";
-                    $response = new \stdClass();
-                    $response->fulfillmentText = $speech1;
-                    $response->source = "webhook";
-                    echo json_encode($response);
-                } else {
-                    $speech1 = "Leave Application Unsuccessful, Insufficient Leave Balance!";
                     $response = new \stdClass();
                     $response->fulfillmentText = $speech1;
                     $response->source = "webhook";
                     echo json_encode($response);
                 }
             }
-        }
+                } else {
+                    $speech1 = "Leave Application Unsuccessful, Insufficient Leave Balance!";
+                    $response = new \stdClass();
+                    $response->fulfillmentText = $speech1;
+                    $response->source = "webhook";
+                    echo json_encode($response);
+                }
     }
     else if(strcmp("graph", $flag) == 0){
         $chkquery1 = "select * from absentemployee where Time_period = 'today'";
@@ -296,21 +243,14 @@ if($method == 'POST') {
     }
     else if(strcmp("withdraw",$flag)==0){
         $speech = "";
-        $uname = $json->queryResult->outputContexts[1]->parameters->person->name;
-        $chkquery = "select * from leave_balance where username = '$uname'";
+        $uname = $json->queryResult->outputContexts[1]->parameters->eid;
+        $chkquery = "select * from empleavehistory where EmpID = '$uname'";
         $result = mysqli_query($conn, $chkquery);
-        if (mysqli_num_rows($result) > 0) {
-            while ($rowu = mysqli_fetch_assoc($result)) {
-            $chkquery = "select * from applied_leaves where Eid = '$rowu[Eid]'";
-            $result = mysqli_query($conn, $chkquery);
             if (mysqli_num_rows($result) > 0) {
                 while ($row = mysqli_fetch_assoc($result)) {
                     $speech = $speech."$row[Lid]".","."$row[From_Date]".","."$row[To_Date]".","."$row[Leave_Type]".":";
                 }
             }
-            }
-
-        }
         $response = new \stdClass();
         $response->fulfillmentText = $speech;
         $response->source = "webhook";
