@@ -118,12 +118,15 @@ if($method == 'POST') {
             echo json_encode($response);
         }
     }else if (strcmp("check", $flag) == 0) {
-        $uname = $json->queryResult->outputContexts[1]->parameters->person->name;
-        $chkquery = "select * from leave_balance where username = '$uname'";
+        $uname = $json->queryResult->outputContexts[1]->parameters->eid;
+        $chkquery = "select * from empleavebalance where EmpID = '$uname'";
         $result = mysqli_query($conn, $chkquery);
         if (mysqli_num_rows($result) > 0) {
-            $row = mysqli_fetch_assoc($result);
-            $speech1 = "CL: $row[CL_Balance], PL: $row[PL_Balance], SL: $row[SL_Balance]";
+            $speech1 = "";
+            while ($row = mysqli_fetch_assoc($result)) {
+                $speech1 = $speech1."$row[LeaveType]".":"."$row[Balance]"." , ";
+            }
+            $speech1 = substr($speech1,0,-3);
             $response = new \stdClass();
             $response->fulfillmentText = $speech1;
             $response->source = "webhook";
