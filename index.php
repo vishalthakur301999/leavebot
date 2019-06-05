@@ -100,7 +100,7 @@ if($method == 'POST') {
     $flag = "";
     $flag = $json->queryResult->outputContexts[0]->parameters->flag;
     if (strcmp("login", $flag) == 0) {
-        $uname = $json->queryResult->outputContexts[0]->parameters->person->name;
+        $uname = $json->queryResult->outputContexts[0]->parameters->eid;
         $query = "select * from empmaster where EmployeeID = '$uname'";
         $result = mysqli_query($conn, $query);
         if (mysqli_num_rows($result) > 0) {
