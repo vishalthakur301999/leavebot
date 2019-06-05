@@ -258,27 +258,32 @@ if($method == 'POST') {
     }
     else if(strcmp("withdrawprocess",$flag)==0){
         $num = $json->queryResult->outputContexts[1]->parameters->number;
-        $chkquery = "select * from applied_leaves where Lid = '$num'";
+        $chkquery = "select * from empleavehistory where Lid = '$num'";
         $result = mysqli_query($conn, $chkquery);
         if (mysqli_num_rows($result) > 0) {
             $row = mysqli_fetch_assoc($result);
-            $chkquery2 = "select * from leave_balance where Eid = '$row[Eid]'";
+            $chkquery2 = "select * from empleavebalance where EmpId = '$row[EmpID]' AND LeaveType = '$row[Leave_Type]'";
             $result2 = mysqli_query($conn, $chkquery2);
             if (mysqli_num_rows($result2) > 0) {
                 $row2 = mysqli_fetch_assoc($result2);
                 $dd = dateDiffInDays("$row[From_Date]", "$row[To_Date]");
-                if(strcmp("CL","$row[Leave_Type]")==0){
-                    $n = intval("$row2[CL_Balance]")+$dd;
-                    $query2 = "UPDATE leave_balance SET CL_Balance=$n WHERE Eid = '$row[Eid]'";
+                $balance = intval("$row2[Balance]")+$dd;
+                $taken = intval("$row2[Taken]")-$dd;
+                $query = "UPDATE empleavebalance SET Balance='$balance', Taken = '$taken' WHERE EmpID = '$row[EmpID]' AND LeaveType = '$row[Leave_Type]'";
+                $query2 = "UPDATE empleavehistory SET Status = 'Withdrawn' WHERE Lid = '$num'";
+                $res = mysqli_query($conn, $query);
+                if (!$res) {
+                    die('Invalid query: ' . mysqli_error($conn));
                 }
-                else if(strcmp("PL","$row[Leave_Type]")==0){
-                    $n = intval("$row2[PL_Balance]")+$dd;
-                    $query2 = "UPDATE leave_balance SET PL_Balance=$n WHERE Eid = '$row[Eid]'";
+                $res2 = mysqli_query($conn, $query2);
+                if (!$res2) {
+                    die('Invalid query: ' . mysqli_error($conn));
                 }
-                else if(strcmp("SL","$row[Leave_Type]")==0){
-                    $n = intval("$row2[SL_Balance]")+$dd;
-                    $query2 = "UPDATE leave_balance SET SL_Balance=$n WHERE Eid = '$row[Eid]'";
-                }
+                $speech1 = "Withdrawal Successfull!";
+                $response = new \stdClass();
+                $response->fulfillmentText = $speech1;
+                $response->source = "webhook";
+                echo json_encode($response);
         }
     }}
     mysqli_close($conn);
