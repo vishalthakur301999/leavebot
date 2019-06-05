@@ -312,6 +312,31 @@ if($method == 'POST') {
         $response->source = "webhook";
         echo json_encode($response);
     }
+    else if(strcmp("withdrawprocess",$flag)==0){
+        $num = $json->queryResult->outputContexts[1]->parameters->number;
+        $chkquery = "select * from applied_leaves where Lid = '$num'";
+        $result = mysqli_query($conn, $chkquery);
+        if (mysqli_num_rows($result) > 0) {
+            $row = mysqli_fetch_assoc($result);
+            $chkquery2 = "select * from leave_balance where Eid = '$row[Eid]'";
+            $result2 = mysqli_query($conn, $chkquery2);
+            if (mysqli_num_rows($result2) > 0) {
+                $row2 = mysqli_fetch_assoc($result2);
+                $dd = dateDiffInDays("$row[From_Date]", "$row[To_Date]");
+                if(strcmp("CL","$row[Leave_Type]")==0){
+                    $n = intval("$row2[CL_Balance]")+$dd;
+                    $query2 = "UPDATE leave_balance SET CL_Balance=$n WHERE Eid = '$row[Eid]'";
+                }
+                else if(strcmp("PL","$row[Leave_Type]")==0){
+                    $n = intval("$row2[PL_Balance]")+$dd;
+                    $query2 = "UPDATE leave_balance SET PL_Balance=$n WHERE Eid = '$row[Eid]'";
+                }
+                else if(strcmp("SL","$row[Leave_Type]")==0){
+                    $n = intval("$row2[SL_Balance]")+$dd;
+                    $query2 = "UPDATE leave_balance SET SL_Balance=$n WHERE Eid = '$row[Eid]'";
+                }
+        }
+    }}
     mysqli_close($conn);
 }
 else
