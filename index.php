@@ -138,19 +138,20 @@ if($method == 'POST') {
             $response->source = "webhook";
             echo json_encode($response);
         }
-    } else if (strcmp("confirm", $flag) == 0) {
-        $uname = $json->queryResult->outputContexts[2]->parameters->person->name;
+    }  else if (strcmp("confirm", $flag) == 0) {
+        $uname = $json->queryResult->outputContexts[2]->parameters->eid;
+        $type = $json->queryResult->outputContexts[2]->parameters->type;
         $from = $json->queryResult->outputContexts[0]->parameters->from;
         $from = substr($from, 0, 10);
         $to = $json->queryResult->outputContexts[0]->parameters->to;
         $to = substr($to, 0, 10);
         $dateDiff = dateDiffInDays($from, $to);
             $i=1;
-            $chkquery = "select * from leave_balance where username = '$uname'";
+            $chkquery = "select * from empleavebalance where EmpID = '$uname' and LeaveType = '$type'";
             $result = mysqli_query($conn, $chkquery);
             if (mysqli_num_rows($result) > 0) {
                 while ($row = mysqli_fetch_assoc($result)) {
-                    $chkquery2 = "select * from applied_leaves where Eid = '$row[Eid]'";
+                    $chkquery2 = "select * from empleavehistory where EmpID = '$uname' and Status = 'Pending Approval'";
                     $result2 = mysqli_query($conn, $chkquery2);
                     if (mysqli_num_rows($result2) > 0) {
                         while ($row2 = mysqli_fetch_assoc($result2)) {
@@ -165,6 +166,7 @@ if($method == 'POST') {
                                 $response->fulfillmentText = $speech1;
                                 $response->source = "webhook";
                                 echo json_encode($response);
+                                break;
                             }
                         }
                     }
@@ -178,7 +180,7 @@ if($method == 'POST') {
                 echo json_encode($response);
             }
 
-    } else if (strcmp("apply", $flag) == 0) {
+    }  else if (strcmp("apply", $flag) == 0) {
         $uname = $json->queryResult->outputContexts[0]->parameters->eid;
         $from = $json->queryResult->outputContexts[0]->parameters->from;
         $remark = $json->queryResult->outputContexts[0]->parameters->any;
