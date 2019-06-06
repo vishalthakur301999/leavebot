@@ -100,8 +100,9 @@ if($method == 'POST') {
     $flag = "";
     $flag = $json->queryResult->outputContexts[0]->parameters->flag;
     if (strcmp("login", $flag) == 0) {
-        $uname = $json->queryResult->outputContexts[0]->parameters->eid;
-        $query = "select * from empmaster where EmployeeID = '$uname'";
+        $eid = "";
+        $eid = $json->queryResult->outputContexts[0]->parameters->eid;
+        $query = "select * from empmaster where EmployeeID = '$eid'";
         $result = mysqli_query($conn, $query);
         if (mysqli_num_rows($result) > 0) {
             while ($row = mysqli_fetch_assoc($result)){
@@ -173,7 +174,7 @@ if($method == 'POST') {
                 }
             }
             if($i==1){
-                $speech1 = "Confirm Leave of $dateDiff day/s? Hellolala";
+                $speech1 = "Confirm Leave of $dateDiff day/s?";
                 $response = new \stdClass();
                 $response->fulfillmentText = $speech1;
                 $response->source = "webhook";
