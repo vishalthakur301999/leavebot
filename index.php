@@ -173,7 +173,7 @@ if($method == 'POST') {
                 }
             }
             if($i==1){
-                $speech1 = "Jai Mata DI";
+                $speech1 = "Confirm Leave of $dateDiff day/s?";
                 $response = new \stdClass();
                 $response->fulfillmentText = $speech1;
                 $response->source = "webhook";
