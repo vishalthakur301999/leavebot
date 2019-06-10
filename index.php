@@ -109,13 +109,7 @@ if($method == 'POST') {
             $speech1 = "Hey " . "$row[Name]" . "! What do you want to do today?";
             $response = new \stdClass();
             $response->fulfillmentText = $speech1;
-            $response->fulfillmentMessages = array(
-		        array(
-			        "text" => array(
-			        "text" => array("text response","Second Text Response")
-			    ) 
-		    )
-	    );
+            $response->custompayload = "This is a Payload";
             $response->source = "webhook";  
             echo json_encode($response);}
         } else {
