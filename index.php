@@ -125,7 +125,7 @@ if($method == 'POST') {
             echo json_encode($response);
         }
     }else if (strcmp("check", $flag) == 0) {
-        $uname = $json->queryResult->outputContexts[1]->parameters->eid;
+        $uname = $json->queryResult->outputContexts[0]->parameters->eid;
         $chkquery = "select * from empleavebalance where EmpID = '$uname'";
         $result = mysqli_query($conn, $chkquery);
         if (mysqli_num_rows($result) > 0) {
