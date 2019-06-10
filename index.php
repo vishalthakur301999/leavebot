@@ -139,7 +139,7 @@ if($method == 'POST') {
             $response->source = "webhook";
             echo json_encode($response);
         } else {
-            $speech1 = "Invalid user";
+            $speech1 = "No Balance Found";
             $response = new \stdClass();
             $response->fulfillmentText = $speech1;
             $response->source = "webhook";
@@ -297,8 +297,7 @@ if($method == 'POST') {
                 echo json_encode($response);
             }
         }}
-    mysqli_close($conn);
-}
+    mysqli_close($conn);}
 else
 {
     echo "Method not allowed";
