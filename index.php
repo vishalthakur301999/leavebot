@@ -112,7 +112,7 @@ if($method == 'POST') {
             $response->fulfillmentMessages = array(
 		        array(
 			        "text" => array(
-			        "text" => array("text response")
+			        "text" => array("text response","Second Text Response")
 			    ) 
 		    )
 	    );
