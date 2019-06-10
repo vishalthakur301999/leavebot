@@ -134,6 +134,13 @@ if($method == 'POST') {
             $speech1 = substr($speech1,0,-2);
             $response = new \stdClass();
             $response->fulfillmentText = $speech1;
+            $response->fulfillmentMessages = array(
+                array(
+                    "text" => array(
+                        "text" => array($speech1,"Apply Leave,Withdraw Leave")
+                    )
+                )
+            );
             $response->source = "webhook";
             echo json_encode($response);
         } else {
@@ -169,6 +176,13 @@ if($method == 'POST') {
                             $speech1 = "Duplicate Dates Found with previously applied Leave. Please try Again";
                             $response = new \stdClass();
                             $response->fulfillmentText = $speech1;
+                            $response->fulfillmentMessages = array(
+                                array(
+                                    "text" => array(
+                                        "text" => array($speech1,"Apply Leave")
+                                    )
+                                )
+                            );
                             $response->source = "webhook";
                             echo json_encode($response);
                             break;
@@ -181,10 +195,17 @@ if($method == 'POST') {
             $speech1 = "Confirm Leave of $dateDiff day/s?";
             $response = new \stdClass();
             $response->fulfillmentText = $speech1;
+            $response->fulfillmentMessages = array(
+                array(
+                    "text" => array(
+                        "text" => array($speech1,"Yes,No")
+                    )
+                )
+            );
             $response->source = "webhook";
             echo json_encode($response);
         }
-    } else if (strcmp("apply", $flag) == 0) {
+    }  else if (strcmp("apply", $flag) == 0) {
         $uname = $json->queryResult->outputContexts[0]->parameters->eid;
         $from = $json->queryResult->outputContexts[0]->parameters->from;
         $remark = $json->queryResult->outputContexts[0]->parameters->any;
@@ -219,6 +240,13 @@ if($method == 'POST') {
                     $speech1 = "Applied, Sent for your Manager approval";
                     $response = new \stdClass();
                     $response->fulfillmentText = $speech1;
+                    $response->fulfillmentMessages = array(
+                        array(
+                            "text" => array(
+                                "text" => array($speech1,"Check Leave Balance, Withdraw Leave")
+                            )
+                        )
+                    );
                     $response->source = "webhook";
                     echo json_encode($response);
                 }
@@ -227,6 +255,13 @@ if($method == 'POST') {
             $speech1 = "Leave Application Unsuccessful, Insufficient Leave Balance!";
             $response = new \stdClass();
             $response->fulfillmentText = $speech1;
+            $response->fulfillmentMessages = array(
+                array(
+                    "text" => array(
+                        "text" => array($speech1,"Apply Leave,Check Leave Balance, Withdraw Leave")
+                    )
+                )
+            );
             $response->source = "webhook";
             echo json_encode($response);
         }
@@ -261,12 +296,26 @@ if($method == 'POST') {
             }
             $response = new \stdClass();
             $response->fulfillmentText = $speech;
+            $response->fulfillmentMessages = array(
+                array(
+                    "text" => array(
+                        "text" => array($speech)
+                    )
+                )
+            );
             $response->source = "webhook";
             echo json_encode($response);
         }else {
             $speech = "No Applied Leaves Found";
             $response = new \stdClass();
             $response->fulfillmentText = $speech;
+            $response->fulfillmentMessages = array(
+                array(
+                    "text" => array(
+                        "text" => array($speech,"Apply Leave,Check Leave Balance, Withdraw Leave")
+                    )
+                )
+            );
             $response->source = "webhook";
             echo json_encode($response);
         }
