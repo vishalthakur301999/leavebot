@@ -79,10 +79,10 @@ if($method == 'POST') {
     $requestBody = file_get_contents('php://input');
     $json = json_decode($requestBody);
     $flag = "";
-    $flag = $json->queryResult->outputContexts[0]->parameters->flag;
+    $flag = $json->queryResult->parameters->flag;
     if (strcmp("login", $flag) == 0) {
         $eid = "";
-        $eid = $json->queryResult->outputContexts[0]->parameters->eid;
+        $eid = $json->queryResult->parameters->eid;
         $query = "select * from empmaster where EmployeeID = '$eid'";
         $result = mysqli_query($conn, $query);
         if (mysqli_num_rows($result) > 0) {
