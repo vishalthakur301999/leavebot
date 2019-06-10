@@ -108,11 +108,15 @@ if($method == 'POST') {
             while ($row = mysqli_fetch_assoc($result)){
             $speech1 = "Hey " . "$row[Name]" . "! What do you want to do today?";
             $response = new \stdClass();
-            $payload = array("payload"=>"This is a Payload");
             $response->fulfillmentText = $speech1;
-            $a = array(array('text' => array("Hello World")));
-            $response->source = "webhook";
-            $response->fulfillmentMessages = $a;    
+            $response->fulfillmentMessages = array(
+		        array(
+			        "text" => array(
+			        "text" => array("text response")
+			    ) 
+		    )
+	    );
+            $response->source = "webhook";  
             echo json_encode($response);}
         } else {
             $speech1 = "Invalid user";
