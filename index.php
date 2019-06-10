@@ -267,6 +267,21 @@ if($method == 'POST') {
         $response->source = "webhook";
         echo json_encode($response);
     }
+     else if(strcmp("pending",$flag)==0){
+        $speech = "";
+        $uname = $json->queryResult->outputContexts[1]->parameters->eid;
+        $chkquery = "select * from empleavehistory where RMID = '$uname' AND Status = 'Pending Approval'";
+        $result = mysqli_query($conn, $chkquery);
+        if (mysqli_num_rows($result) > 0) {
+            while ($row = mysqli_fetch_assoc($result)) {
+                $speech = $speech."$row[Lid]".","."$row[From_Date]".","."$row[To_Date]".","."$row[Leave_Type]".":";
+            }
+        }
+        $response = new \stdClass();
+        $response->fulfillmentText = $speech;
+        $response->source = "webhook";
+        echo json_encode($response);
+    }
     else if(strcmp("withdrawprocess",$flag)==0){
         $num = $json->queryResult->outputContexts[1]->parameters->number;
         $chkquery = "select * from empleavehistory where Lid = '$num'";
