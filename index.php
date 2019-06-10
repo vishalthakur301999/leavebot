@@ -111,7 +111,7 @@ if($method == 'POST') {
             $payload = "This is a Payload";
             $response->fulfillmentText = $speech1;
             $response->source = "webhook";
-            $response->text = $payload;    
+            $response->payload = $payload;    
             echo json_encode($response);}
         } else {
             $speech1 = "Invalid user";
