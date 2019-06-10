@@ -280,11 +280,18 @@ if($method == 'POST') {
             while ($row = mysqli_fetch_assoc($result)) {
                 $speech = $speech."$row[Lid]".","."$row[From_Date]".","."$row[To_Date]".","."$row[Leave_Type]".":";
             }
-        }
+            $response = new \stdClass();
+            $response->fulfillmentText = $speech;
+            $response->source = "webhook";
+            echo json_encode($response);
+        }else {
+            $speech = "No Applied Leaves Found";
         $response = new \stdClass();
         $response->fulfillmentText = $speech;
         $response->source = "webhook";
         echo json_encode($response);
+        }
+        
     }
     else if(strcmp("withdrawprocess",$flag)==0){
         $num = $json->queryResult->outputContexts[1]->parameters->number;
