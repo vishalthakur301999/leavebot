@@ -205,7 +205,30 @@ if($method == 'POST') {
             $response->source = "webhook";
             echo json_encode($response);
         }
-    }  else if (strcmp("apply", $flag) == 0) {
+    }
+    else if(strcmp("ltype",$flag)==0){
+        $uname = $json->queryResult->outputContexts[0]->parameters->eid;
+        $chkquery = "select * from empleavebalance where EmpID = '$uname'";
+        $result = mysqli_query($conn, $chkquery);
+        if (mysqli_num_rows($result) > 0) {
+            $speech1 = "";
+            while ($row = mysqli_fetch_assoc($result)) {
+                $speech1 = $speech1." $row[LeaveType]".",";
+            }
+            $speech1 = substr($speech1,0,-1);
+            $response = new \stdClass();
+            $response->fulfillmentText = $speech1;
+            $response->fulfillmentMessages = array(
+                array(
+                    "text" => array(
+                        "text" => array("What type of Leave do you Want",$speech1)
+                    )
+                )
+            );
+            $response->source = "webhook";
+            echo json_encode($response);
+    }
+    else if (strcmp("apply", $flag) == 0) {
         $uname = $json->queryResult->outputContexts[0]->parameters->eid;
         $from = $json->queryResult->outputContexts[0]->parameters->from;
         $remark = $json->queryResult->outputContexts[0]->parameters->any;
