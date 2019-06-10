@@ -110,8 +110,8 @@ if($method == 'POST') {
             $response = new \stdClass();
             $payload = "This is a Payload";
             $response->fulfillmentText = $speech1;
-            //$response->payload = $payload;    
             $response->source = "webhook";
+            $response->payload = $payload;    
             echo json_encode($response);}
         } else {
             $speech1 = "Invalid user";
