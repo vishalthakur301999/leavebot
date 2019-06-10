@@ -77,7 +77,7 @@ $method = $_SERVER['REQUEST_METHOD'];
 if($method == 'POST') {
 // Process only when method is POST
     $requestBody = file_get_contents('php://input');
-    $json = json_decode($requestBody);$json = json_decode($requestBody);
+    $json = json_decode($requestBody);
     $flag = "";
     $flag = $json->queryResult->outputContexts[0]->parameters->flag;
     if (strcmp("login", $flag) == 0) {
