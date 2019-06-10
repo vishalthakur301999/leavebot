@@ -106,18 +106,35 @@ if($method == 'POST') {
         $result = mysqli_query($conn, $query);
         if (mysqli_num_rows($result) > 0) {
             while ($row = mysqli_fetch_assoc($result)){
-            $speech1 = "Hey " . "$row[Name]" . "! What do you want to do today?";
-            $response = new \stdClass();
-            $response->fulfillmentText = $speech1;
-            $response->fulfillmentMessages = array(
+		    if(strcmp($row[Role],"Employee"){
+		    	$speech1 = "Hey " . "$row[Name]" . "! What do you want to do today?";
+            		$response = new \stdClass();
+            		$response->fulfillmentText = $speech1;
+            		$response->fulfillmentMessages = array(
 		        array(
 			        "text" => array(
-			        "text" => array("text response")
-			    ) 
-		    )
-	    );
-            $response->source = "webhook";  
-            echo json_encode($response);}
+			        "text" => array($speech1,"Apply Leave,Check Leave Balance, Withdraw Leave")
+			    		) 
+		    		)
+	    		);
+            		$response->source = "webhook";  
+            		echo json_encode($response);}
+		    }
+		    else if(strcmp($row[Role],"Manager"){
+		    $speech1 = "Hey " . "$row[Name]" . "! What do you want to do today?";
+            		$response = new \stdClass();
+            		$response->fulfillmentText = $speech1;
+            		$response->fulfillmentMessages = array(
+		        array(
+			        "text" => array(
+			        "text" => array($speech1,"Apply Leave,Check Leave Balance,Withdraw Leave,Pending Requests")
+			    		) 
+		    		)
+	    		);
+            		$response->source = "webhook";  
+            		echo json_encode($response);
+		    }   
+           
         } else {
             $speech1 = "Invalid user";
             $response = new \stdClass();
