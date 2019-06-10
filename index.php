@@ -357,6 +357,52 @@ if($method == 'POST') {
         }
 
     }
+    else if(strcmp("pendingprocess",$flag)==0){
+        $num = $json->queryResult->outputContexts[1]->parameters->number;
+        $act = $json->queryResult->outputContexts[1]->parameters->lac;
+        $chkquery = "select * from empleavehistory where Lid = '$num'";
+        $result = mysqli_query($conn, $chkquery);
+        if (mysqli_num_rows($result) > 0) {
+            $row = mysqli_fetch_assoc($result);
+            $chkquery2 = "select * from empleavebalance where EmpId = '$row[EmpID]' AND LeaveType = '$row[Leave_Type]'";
+            $result2 = mysqli_query($conn, $chkquery2);
+            if (mysqli_num_rows($result2) > 0) {
+                $row2 = mysqli_fetch_assoc($result2);
+                if(strcmp($act,"Approve")){
+                    $query2 = "UPDATE empleavehistory SET Status = 'Approved' WHERE Lid = '$num'";
+                    $res2 = mysqli_query($conn, $query2);
+                    if (!$res2) {
+                        die('Invalid query: ' . mysqli_error($conn));
+                    }
+                    $speech1 = "Approval Successfull!";
+                    $response = new \stdClass();
+                    $response->fulfillmentText = $speech1;
+                    $response->source = "webhook";
+                    echo json_encode($response);
+                }
+                else if(strcmp($act,"Reject")){
+                    $dd = dateDiffInDays("$row[From_Date]", "$row[To_Date]");
+                    $balance = intval("$row2[Balance]")+$dd;
+                    $taken = intval("$row2[Taken]")-$dd;
+                    $query = "UPDATE empleavebalance SET Balance='$balance', Taken = '$taken' WHERE EmpID = '$row[EmpID]' AND LeaveType = '$row[Leave_Type]'";
+                    $query2 = "UPDATE empleavehistory SET Status = 'Rejected' WHERE Lid = '$num'";
+                    $res = mysqli_query($conn, $query);
+                    if (!$res) {
+                        die('Invalid query: ' . mysqli_error($conn));
+                    }
+                    $res2 = mysqli_query($conn, $query2);
+                    if (!$res2) {
+                        die('Invalid query: ' . mysqli_error($conn));
+                    }
+                    $speech1 = "Rejection Successfull!";
+                    $response = new \stdClass();
+                    $response->fulfillmentText = $speech1;
+                    $response->source = "webhook";
+                    echo json_encode($response);
+                }
+
+            }
+        }}
     else if(strcmp("withdrawprocess",$flag)==0){
         $num = $json->queryResult->outputContexts[1]->parameters->number;
         $chkquery = "select * from empleavehistory where Lid = '$num'";
