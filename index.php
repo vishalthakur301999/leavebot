@@ -391,7 +391,7 @@ if($method == 'POST') {
             $result2 = mysqli_query($conn, $chkquery2);
             if (mysqli_num_rows($result2) > 0) {
                 $row2 = mysqli_fetch_assoc($result2);
-                if(strcmp($act,"Approve")){
+                if(strcmp($act,"Approve")==0){
                     $query2 = "UPDATE empleavehistory SET Status = 'Approved' WHERE Lid = '$num'";
                     $res2 = mysqli_query($conn, $query2);
                     if (!$res2) {
@@ -403,7 +403,7 @@ if($method == 'POST') {
                     $response->source = "webhook";
                     echo json_encode($response);
                 }
-                else if(strcmp($act,"Reject")){
+                else if(strcmp($act,"Reject")==0){
                     $dd = dateDiffInDays("$row[From_Date]", "$row[To_Date]");
                     $balance = intval("$row2[Balance]")+$dd;
                     $taken = intval("$row2[Taken]")-$dd;
