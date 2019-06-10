@@ -108,7 +108,9 @@ if($method == 'POST') {
             while ($row = mysqli_fetch_assoc($result)){
             $speech1 = "Hey " . "$row[Name]" . "! What do you want to do today?";
             $response = new \stdClass();
+            $payload = "This is a Payload"
             $response->fulfillmentText = $speech1;
+            $response->payload = $payload;    
             $response->source = "webhook";
             echo json_encode($response);}
         } else {
