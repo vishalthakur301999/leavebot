@@ -5,24 +5,18 @@ $password = "HxvEoroIbT";
 $db = "yCTdDPvaVT";
 $conn = mysqli_connect($servername,$username,$password);
 mysqli_select_db($conn,$db);
-
 function dateDiffInDays($startDate,$endDate,$holidays = array("2019-01-26","2019-08-15","2019-10-02")){
     // do strtotime calculations just once
     $endDate = strtotime($endDate);
     $startDate = strtotime($startDate);
-
-
     //The total number of days between the two dates. We compute the no. of seconds and divide it to 60*60*24
     //We add one to inlude both dates in the interval.
     $days = ($endDate - $startDate) / 86400 + 1;
-
     $no_full_weeks = floor($days / 7);
     $no_remaining_days = fmod($days, 7);
-
     //It will return 1 if it's Monday,.. ,7 for Sunday
     $the_first_day_of_week = date("N", $startDate);
     $the_last_day_of_week = date("N", $endDate);
-
     //---->The two can be equal in leap years when february has 29 days, the equal sign is added here
     //In the first case the whole interval is within a week, in the second case the interval falls in two weeks.
     if ($the_first_day_of_week <= $the_last_day_of_week) {
@@ -32,12 +26,10 @@ function dateDiffInDays($startDate,$endDate,$holidays = array("2019-01-26","2019
     else {
         // (edit by Tokes to fix an edge case where the start day was a Sunday
         // and the end day was NOT a Saturday)
-
         // the day of the week for start is later than the day of the week for end
         if ($the_first_day_of_week == 7) {
             // if the start date is a Sunday, then we definitely subtract 1 day
             $no_remaining_days--;
-
             if ($the_last_day_of_week == 6) {
                 // if the end date is a Saturday, then we subtract another day
                 $no_remaining_days--;
@@ -49,7 +41,6 @@ function dateDiffInDays($startDate,$endDate,$holidays = array("2019-01-26","2019
             $no_remaining_days -= 2;
         }
     }
-
     //The no. of business days is: (number of weeks between the two dates) * (5 working days) + the remainder
 //---->february in none leap years gave a remainder of 0 but still calculated weekends between first and last day, this is one way to fix it
     $workingDays = $no_full_weeks * 5;
@@ -57,7 +48,6 @@ function dateDiffInDays($startDate,$endDate,$holidays = array("2019-01-26","2019
     {
         $workingDays += $no_remaining_days;
     }
-
     //We subtract the holidays
     foreach($holidays as $holiday){
         $time_stamp=strtotime($holiday);
@@ -65,33 +55,24 @@ function dateDiffInDays($startDate,$endDate,$holidays = array("2019-01-26","2019
         if ($startDate <= $time_stamp && $time_stamp <= $endDate && date("N",$time_stamp) != 6 && date("N",$time_stamp) != 7)
             $workingDays--;
     }
-
     return $workingDays;
 }
-
 function getDatesFromRange($start, $end, $format = 'Y-m-d') {
-
     // Declare an empty array
     $array = array();
-
     // Variable that store the date interval
     // of period 1 day
     $interval = new DateInterval('P1D');
-
     $realEnd = new DateTime($end);
     $realEnd->add($interval);
-
     $period = new DatePeriod(new DateTime($start), $interval, $realEnd);
-
     // Use loop to store date into array
     foreach($period as $date) {
         $array[] = $date->format($format);
     }
-
     // Return the array elements
     return $array;
 }
-
 $method = $_SERVER['REQUEST_METHOD'];
 if($method == 'POST') {
 // Process only when method is POST
@@ -106,35 +87,36 @@ if($method == 'POST') {
         $result = mysqli_query($conn, $query);
         if (mysqli_num_rows($result) > 0) {
             while ($row = mysqli_fetch_assoc($result)){
-		    if(strcmp($row[Role],"Employee")==0){
-		    	$speech1 = "Hey " . "$row[Name]" . "! What do you want to do today?";
-            		$response = new \stdClass();
-            		$response->fulfillmentText = $speech1;
-            		$response->fulfillmentMessages = array(
-		        array(
-			        "text" => array(
-			        "text" => array($speech1,"Apply Leave,Check Leave Balance, Withdraw Leave")
-			    		) 
-		    		)
-	    		);
-            		$response->source = "webhook";  
-            		echo json_encode($response);}
-		    }
-		    else if(strcmp($row[Role],"Manager")==0){
-		    $speech1 = "Hey " . "$row[Name]" . "! What do you want to do today?";
-            		$response = new \stdClass();
-            		$response->fulfillmentText = $speech1;
-            		$response->fulfillmentMessages = array(
-		        array(
-			        "text" => array(
-			        "text" => array($speech1,"Apply Leave,Check Leave Balance,Withdraw Leave,Pending Requests")
-			    		) 
-		    		)
-	    		);
-            		$response->source = "webhook";  
-            		echo json_encode($response);
-		    }   
-           
+                if(strcmp($row[Role],"Employee")==0){
+                    $speech1 = "Hey " . "$row[Name]" . "! What do you want to do today?";
+                    $response = new \stdClass();
+                    $response->fulfillmentText = $speech1;
+                    $response->fulfillmentMessages = array(
+                        array(
+                            "text" => array(
+                                "text" => array($speech1,"Apply Leave,Check Leave Balance, Withdraw Leave")
+                            )
+                        )
+                    );
+                    $response->source = "webhook";
+                    echo json_encode($response);}
+                else if(strcmp($row[Role],"Manager")==0){
+                    $speech1 = "Hey " . "$row[Name]" . "! What do you want to do today?";
+                    $response = new \stdClass();
+                    $response->fulfillmentText = $speech1;
+                    $response->fulfillmentMessages = array(
+                        array(
+                            "text" => array(
+                                "text" => array($speech1,"Apply Leave,Check Leave Balance,Withdraw Leave,Pending Requests")
+                            )
+                        )
+                    );
+                    $response->source = "webhook";
+                    echo json_encode($response);
+                }
+            }
+
+
         } else {
             $speech1 = "Invalid user";
             $response = new \stdClass();
@@ -171,40 +153,39 @@ if($method == 'POST') {
         $to = $json->queryResult->outputContexts[0]->parameters->to;
         $to = substr($to, 0, 10);
         $dateDiff = dateDiffInDays($from, $to);
-            $i=1;
-            $chkquery = "select * from empleavebalance where EmpID = '$uname' and LeaveType = '$type'";
-            $result = mysqli_query($conn, $chkquery);
-            if (mysqli_num_rows($result) > 0) {
-                while ($row = mysqli_fetch_assoc($result)) {
-                    $chkquery2 = "select * from empleavehistory where EmpID = '$uname' and Status = 'Pending Approval'";
-                    $result2 = mysqli_query($conn, $chkquery2);
-                    if (mysqli_num_rows($result2) > 0) {
-                        while ($row2 = mysqli_fetch_assoc($result2)) {
-                            $Date1 = getDatesFromRange("$row2[From_Date]", "$row2[To_Date]");
-                            $Date2 = getDatesFromRange($from, $to);
-                            $result3 = array_intersect($Date1, $Date2);
-                            if (empty($result3)) {
-                            } else {
-                                $i=0;
-                                $speech1 = "Duplicate Dates Found with previously applied Leave. Please try Again";
-                                $response = new \stdClass();
-                                $response->fulfillmentText = $speech1;
-                                $response->source = "webhook";
-                                echo json_encode($response);
-                                break;
-                            }
+        $i=1;
+        $chkquery = "select * from empleavebalance where EmpID = '$uname' and LeaveType = '$type'";
+        $result = mysqli_query($conn, $chkquery);
+        if (mysqli_num_rows($result) > 0) {
+            while ($row = mysqli_fetch_assoc($result)) {
+                $chkquery2 = "select * from empleavehistory where EmpID = '$uname' and Status = 'Pending Approval'";
+                $result2 = mysqli_query($conn, $chkquery2);
+                if (mysqli_num_rows($result2) > 0) {
+                    while ($row2 = mysqli_fetch_assoc($result2)) {
+                        $Date1 = getDatesFromRange("$row2[From_Date]", "$row2[To_Date]");
+                        $Date2 = getDatesFromRange($from, $to);
+                        $result3 = array_intersect($Date1, $Date2);
+                        if (empty($result3)) {
+                        } else {
+                            $i=0;
+                            $speech1 = "Duplicate Dates Found with previously applied Leave. Please try Again";
+                            $response = new \stdClass();
+                            $response->fulfillmentText = $speech1;
+                            $response->source = "webhook";
+                            echo json_encode($response);
+                            break;
                         }
                     }
                 }
             }
-            if($i==1){
-                $speech1 = "Confirm Leave of $dateDiff day/s?";
-                $response = new \stdClass();
-                $response->fulfillmentText = $speech1;
-                $response->source = "webhook";
-                echo json_encode($response);
-            }
-
+        }
+        if($i==1){
+            $speech1 = "Confirm Leave of $dateDiff day/s?";
+            $response = new \stdClass();
+            $response->fulfillmentText = $speech1;
+            $response->source = "webhook";
+            echo json_encode($response);
+        }
     }  else if (strcmp("apply", $flag) == 0) {
         $uname = $json->queryResult->outputContexts[0]->parameters->eid;
         $from = $json->queryResult->outputContexts[0]->parameters->from;
@@ -241,13 +222,13 @@ if($method == 'POST') {
                     echo json_encode($response);
                 }
             }
-                } else {
-                    $speech1 = "Leave Application Unsuccessful, Insufficient Leave Balance!";
-                    $response = new \stdClass();
-                    $response->fulfillmentText = $speech1;
-                    $response->source = "webhook";
-                    echo json_encode($response);
-                }
+        } else {
+            $speech1 = "Leave Application Unsuccessful, Insufficient Leave Balance!";
+            $response = new \stdClass();
+            $response->fulfillmentText = $speech1;
+            $response->source = "webhook";
+            echo json_encode($response);
+        }
     }
     else if(strcmp("graph", $flag) == 0){
         $chkquery1 = "select * from absentemployee where Time_period = 'today'";
@@ -273,11 +254,11 @@ if($method == 'POST') {
         $uname = $json->queryResult->outputContexts[1]->parameters->eid;
         $chkquery = "select * from empleavehistory where EmpID = '$uname' AND Status = 'Pending Approval'";
         $result = mysqli_query($conn, $chkquery);
-            if (mysqli_num_rows($result) > 0) {
-                while ($row = mysqli_fetch_assoc($result)) {
-                    $speech = $speech."$row[Lid]".","."$row[From_Date]".","."$row[To_Date]".","."$row[Leave_Type]".":";
-                }
+        if (mysqli_num_rows($result) > 0) {
+            while ($row = mysqli_fetch_assoc($result)) {
+                $speech = $speech."$row[Lid]".","."$row[From_Date]".","."$row[To_Date]".","."$row[Leave_Type]".":";
             }
+        }
         $response = new \stdClass();
         $response->fulfillmentText = $speech;
         $response->source = "webhook";
@@ -311,8 +292,8 @@ if($method == 'POST') {
                 $response->fulfillmentText = $speech1;
                 $response->source = "webhook";
                 echo json_encode($response);
-        }
-    }}
+            }
+        }}
     mysqli_close($conn);
 }
 else
