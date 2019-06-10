@@ -197,13 +197,16 @@ if($method == 'POST') {
         $type = $json->queryResult->outputContexts[0]->parameters->type;
         $chkquery = "select * from empleavebalance where EmpID = '$uname' and LeaveType = '$type'";
         $result = mysqli_query($conn, $chkquery);
+        $chkmm = "select * from empmaster where EmpID = '$uname'";
+        $resm = mysqli_query($conn, $chkmm);
+        $rowm = mysqli_fetch_assoc($resm);
         if (mysqli_num_rows($result) > 0) {
             while ($row = mysqli_fetch_assoc($result)) {
                 $balance = "$row[Balance]";
                 $balance = (int)$balance;
                 $t = date("Y-m-d");
                 if ($dateDiff <= $balance) {
-                    $query = "INSERT INTO empleavehistory(EmpID,From_Date,To_Date,Leave_Type,Reason,LeaveRequestedOn,Status) VALUES ('$uname','$from','$to','$type','$remark','$t','Pending Approval')";
+                    $query = "INSERT INTO empleavehistory(EmpID,From_Date,To_Date,Leave_Type,Reason,LeaveRequestedOn,Status) VALUES ('$uname','$from','$to','$type','$remark','$rowm[RMEmpID]','$t','Pending Approval')";
                     $n = $balance - $dateDiff;
                     $taken = intval("$row[Taken]") + $dateDiff;
                     $query2 = "UPDATE empleavebalance SET Balance='$n',Taken='$taken' WHERE EmpID = '$uname' AND LeaveType = '$type'";
