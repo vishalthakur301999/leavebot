@@ -335,7 +335,7 @@ if($method == 'POST') {
             $response->fulfillmentMessages = array(
                 array(
                     "text" => array(
-                        "text" => array($speech,"Apply Leave,Check Leave Balance, Withdraw Leave")
+                        "text" => array($speech,"Apply Leave,Check Leave Balance,Withdraw Leave")
                     )
                 )
             );
