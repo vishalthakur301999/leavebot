@@ -227,7 +227,7 @@ if($method == 'POST') {
             );
             $response->source = "webhook";
             echo json_encode($response);
-    }
+    }}
     else if (strcmp("apply", $flag) == 0) {
         $uname = $json->queryResult->outputContexts[0]->parameters->eid;
         $from = $json->queryResult->outputContexts[0]->parameters->from;
