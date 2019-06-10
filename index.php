@@ -106,7 +106,7 @@ if($method == 'POST') {
         $result = mysqli_query($conn, $query);
         if (mysqli_num_rows($result) > 0) {
             while ($row = mysqli_fetch_assoc($result)){
-		    if(strcmp($row[Role],"Employee"){
+		    if(strcmp($row[Role],"Employee")==0){
 		    	$speech1 = "Hey " . "$row[Name]" . "! What do you want to do today?";
             		$response = new \stdClass();
             		$response->fulfillmentText = $speech1;
@@ -120,7 +120,7 @@ if($method == 'POST') {
             		$response->source = "webhook";  
             		echo json_encode($response);}
 		    }
-		    else if(strcmp($row[Role],"Manager"){
+		    else if(strcmp($row[Role],"Manager")==0){
 		    $speech1 = "Hey " . "$row[Name]" . "! What do you want to do today?";
             		$response = new \stdClass();
             		$response->fulfillmentText = $speech1;
