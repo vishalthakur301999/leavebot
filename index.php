@@ -412,9 +412,9 @@ if($method == 'POST') {
         if (mysqli_num_rows($result) > 0) {
             $speech1 = "";
             while ($row = mysqli_fetch_assoc($result)) {
-                $speech1 = $speech1." $row[LeaveType]".",";
+                $speech1 = $speech1." $row[LeaveType]".":"." $row[Balance]".", ";
             }
-            $speech1 = substr($speech1,0,-1);
+            $speech1 = substr($speech1,0,-2);
             $response = new \stdClass();
             $response->fulfillmentText = $speech1;
             $response->fulfillmentMessages = array(
@@ -426,7 +426,21 @@ if($method == 'POST') {
             );
             $response->source = "webhook";
             echo json_encode($response);
-    }}
+        } else {
+            $speech1 = "No Balance Found";
+            $response = new \stdClass();
+            $response->fulfillmentText = $speech1;
+            $response->fulfillmentMessages = array(
+                array(
+                    "text" => array(
+                        "text" => array("You dont have any Leave Balance",$speech1)
+                    )
+                )
+            );
+            $response->source = "webhook";
+            echo json_encode($response);
+        }
+    }
     else if(strcmp("pendingprocess",$flag)==0){
         $num = $json->queryResult->outputContexts[1]->parameters->number;
         $act = $json->queryResult->outputContexts[1]->parameters->lac;
