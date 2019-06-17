@@ -412,13 +412,7 @@ if($method == 'POST') {
                 $speech1 = "Withdrawal Successfull!";
                 $response = new \stdClass();
                 $response->fulfillmentText = $speech1;
-            $response->fulfillmentMessages = array(
-                array(
-                    "text" => array(
-                        "text" => array($speech1,"Apply Leave,Check Leave Balance,Withdraw Leave")
-                    )
-                )
-            );
+                $response->source = "webhook";
                 echo json_encode($response);
             }
         }}
@@ -485,15 +479,9 @@ if($method == 'POST') {
                     }
                     $speech1 = "Approval Successfull!";
                     $response = new \stdClass();
-                     $response->fulfillmentText = $speech1;
-            $response->fulfillmentMessages = array(
-                array(
-                    "text" => array(
-                        "text" => array($speech1,"Apply Leave,Check Leave Balance,Withdraw Leave,Pending Requests")
-                    )
-                )
-            );
-                echo json_encode($response);
+                    $response->fulfillmentText = $speech1;
+                    $response->source = "webhook";
+                    echo json_encode($response);
                 }
                 else if(strcmp($act,"Reject")==0){
                     $dd = dateDiffInDays("$row[From_Date]", "$row[To_Date]");
@@ -511,15 +499,9 @@ if($method == 'POST') {
                     }
                     $speech1 = "Rejection Successfull!";
                     $response = new \stdClass();
-                     $response->fulfillmentText = $speech1;
-            $response->fulfillmentMessages = array(
-                array(
-                    "text" => array(
-                        "text" => array($speech1,"Apply Leave,Check Leave Balance,Withdraw Leave,Pending Requests")
-                    )
-                )
-            );
-                echo json_encode($response);
+                    $response->fulfillmentText = $speech1;
+                    $response->source = "webhook";
+                    echo json_encode($response);
                 }
 
             }
