@@ -420,7 +420,7 @@ if($method == 'POST') {
             $response->fulfillmentMessages = array(
                 array(
                     "text" => array(
-                        "text" => array("What type of Leave do you Want",$speech1)
+                        "text" => array("Enter Leave Details",$speech1)
                     )
                 )
             );
