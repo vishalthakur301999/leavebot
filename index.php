@@ -357,7 +357,14 @@ if($method == 'POST') {
         $result = mysqli_query($conn, $chkquery);
         if (mysqli_num_rows($result) > 0) {
             while ($row = mysqli_fetch_assoc($result)) {
-                $speech = $speech."$row[Lid]".","."$row[From_Date]".","."$row[To_Date]".","."$row[Leave_Type]".":";
+                $chkquery2 = "select * from empmaster where EmployeeID = '$row[EmpID]'";
+                $result2 = mysqli_query($conn, $chkquery2);
+                if(mysqli_num_rows($result2) > 0){
+                    while($row2 = mysqli_fetch_assoc($result2)){
+                        $speech = $speech."$row[Lid]".","."$row[From_Date]".","."$row[To_Date]".","."$row[Leave_Type]".","."$row[EmpID]".","."$row2[Name]".":";
+                    }
+                }
+
             }
             $response = new \stdClass();
             $response->fulfillmentText = $speech;
