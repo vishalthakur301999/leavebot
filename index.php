@@ -101,18 +101,38 @@ if($method == 'POST') {
                     $response->source = "webhook";
                     echo json_encode($response);}
                 else if(strcmp("$row[Role]","Manager")==0){
-                    $speech1 = "Hey " . "$row[Name]" . "! What do you want to do today?";
-                    $response = new \stdClass();
-                    $response->fulfillmentText = $speech1;
-                    $response->fulfillmentMessages = array(
-                        array(
-                            "text" => array(
-                                "text" => array($speech1,"Apply Leave,Check Leave Balance,Withdraw Leave,Pending Requests")
+                    $query2 = "select * from empleavehistory where RMID = '$eid' and status ='Pending Approval'";
+                    $result2 = mysqli_query($conn, $query2);
+                    if (mysqli_num_rows($result2) > 0) {
+                        $n = mysqli_num_rows($result2);
+                        $speech1 = "Hey " . "$row[Name]" . "! What do you want to do today?";
+                        $response = new \stdClass();
+                        $response->fulfillmentText = $speech1;
+                        $response->fulfillmentMessages = array(
+                            array(
+                                "text" => array(
+                                    "text" => array($speech1,"Apply Leave,Check Leave Balance,Withdraw Leave,Pending Requests","You have ".$n." Pending Requests")
+                                )
                             )
-                        )
-                    );
-                    $response->source = "webhook";
-                    echo json_encode($response);
+                        );
+                        $response->source = "webhook";
+                        echo json_encode($response);
+                    }
+                    else{
+                        $speech1 = "Hey " . "$row[Name]" . "! What do you want to do today?";
+                        $response = new \stdClass();
+                        $response->fulfillmentText = $speech1;
+                        $response->fulfillmentMessages = array(
+                            array(
+                                "text" => array(
+                                    "text" => array($speech1,"Apply Leave,Check Leave Balance,Withdraw Leave,Pending Requests")
+                                )
+                            )
+                        );
+                        $response->source = "webhook";
+                        echo json_encode($response);
+                    }
+
                 }
             }
         } else {
