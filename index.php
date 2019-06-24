@@ -95,15 +95,13 @@ if($method == 'POST') {
                         array(
                             "text" => array(
                                 "text" => array($speech1,"Apply Leave,Check Leave Balance, Withdraw Leave")
-                            )
-                        ),
-                        array(
+                            ),
                             "quickReplies" => array(
                                 "title" => array($speech1),
                                 "quickReplies" => array("Apply Leave","Check Leave Balance","Withdraw Leave")
-                            )
-                        ),
-                        "platform"=>array("SKYPE")
+                            ),
+                            "platform"=>array("SKYPE")
+                        )
                     );
                     $response->source = "webhook";
                     echo json_encode($response);}
@@ -119,15 +117,13 @@ if($method == 'POST') {
                             array(
                                 "text" => array(
                                     "text" => array($speech1,"Apply Leave,Check Leave Balance,Withdraw Leave,Pending Requests","You have ".$n." Pending Requests")
-                                )
-                            ),
-                            array(
+                                ),
                                 "quickReplies" => array(
                                     "title" => array($speech1),
                                     "quickReplies" => array("Apply Leave","Check Leave Balance","Withdraw Leave","Pending Requests")
-                                )
-                            ),
-                            "platform"=>array("SKYPE")
+                                ),
+                                "platform"=>array("SKYPE")
+                            )
                         );
                         $response->source = "webhook";
                         echo json_encode($response);
