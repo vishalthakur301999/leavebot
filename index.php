@@ -198,33 +198,52 @@ if($method == 'POST') {
                 continue;
             }
         }
-        $chkquery = "select * from empleavebalance where EmpID = '$uname'";
-        $result = mysqli_query($conn, $chkquery);
-        if (mysqli_num_rows($result) > 0) {
-            $speech1 = "";
-            while ($row = mysqli_fetch_assoc($result)) {
-                $speech1 = $speech1." $row[LeaveType]".":"." $row[Balance]".", ";
+        for($i=0;$i<=sizeof($json->queryResult->outputContexts);$i++){
+            if(isset($json->queryResult->outputContexts[$i]->parameters->key)){
+                $cbkey = $json->queryResult->outputContexts[$i]->parameters->key;
             }
-            $speech1 = substr($speech1,0,-2);
-            $response = new \stdClass();
-            $response->fulfillmentText = $speech1;
-            $response->fulfillmentMessages = array(
-                array(
-                    "text" => array(
-                        "text" => array($speech1,"Apply Leave,Withdraw Leave")
+            else{
+                continue;
+            }
+        }
+        $querykey = "select * from empmaster where EmployeeID = '$eid' and cbkey = '$cbkey'";
+        $resultkey = mysqli_query($conn, $querykey);
+        if (mysqli_num_rows($resultkey) > 0) {
+            $chkquery = "select * from empleavebalance where EmpID = '$uname'";
+            $result = mysqli_query($conn, $chkquery);
+            if (mysqli_num_rows($result) > 0) {
+                $speech1 = "";
+                while ($row = mysqli_fetch_assoc($result)) {
+                    $speech1 = $speech1." $row[LeaveType]".":"." $row[Balance]".", ";
+                }
+                $speech1 = substr($speech1,0,-2);
+                $response = new \stdClass();
+                $response->fulfillmentText = $speech1;
+                $response->fulfillmentMessages = array(
+                    array(
+                        "text" => array(
+                            "text" => array($speech1,"Apply Leave,Withdraw Leave")
+                        )
                     )
-                )
-            );
-            $response->source = "webhook";
-            echo json_encode($response);
-        } else {
-            $speech1 = "No Balance Found";
+                );
+                $response->source = "webhook";
+                echo json_encode($response);
+            } else {
+                $speech1 = "No Balance Found";
+                $response = new \stdClass();
+                $response->fulfillmentText = $speech1;
+                $response->source = "webhook";
+                echo json_encode($response);
+            }
+            }else {
+            $speech1 = "As you have tried to access another account, Please Re-Login";
             $response = new \stdClass();
             $response->fulfillmentText = $speech1;
             $response->source = "webhook";
             echo json_encode($response);
         }
-    }  else if (strcmp("confirm", $flag) == 0) {
+
+    }   else if (strcmp("confirm", $flag) == 0) {
         $uname = $json->queryResult->outputContexts[1]->parameters->eid;
         $type = $json->queryResult->outputContexts[1]->parameters->type;
         $from = $json->queryResult->outputContexts[1]->parameters->from;
