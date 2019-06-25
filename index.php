@@ -206,10 +206,11 @@ if($method == 'POST') {
                 continue;
             }
         }
-        $querykey = "select * from empmaster where EmployeeID = '$uname' and cbkey = '$cbkey'";
+        $querykey = "select * from empmaster where cbkey = '$cbkey'";
         $resultkey = mysqli_query($conn, $querykey);
+        $rowkey = mysqli_fetch_assoc($resultkey);
         if (mysqli_num_rows($resultkey) > 0) {
-            $chkquery = "select * from empleavebalance where EmpID = '$uname'";
+            $chkquery = "select * from empleavebalance where EmpID = '$rowkey[EmployeeID]'";
             $result = mysqli_query($conn, $chkquery);
             if (mysqli_num_rows($result) > 0) {
                 $speech1 = "";
@@ -235,16 +236,22 @@ if($method == 'POST') {
                 $response->source = "webhook";
                 echo json_encode($response);
             }
-            }else {
-            $speech1 = "As you have tried to access another account, Please Re-Login";
-            $response = new \stdClass();
-            $response->fulfillmentText = $speech1;
-            $response->source = "webhook";
-            echo json_encode($response);
+
         }
 
-    }   else if (strcmp("confirm", $flag) == 0) {
-        $uname = $json->queryResult->outputContexts[1]->parameters->eid;
+    }  else if (strcmp("confirm", $flag) == 0) {
+        for($i=0;$i<=sizeof($json->queryResult->outputContexts);$i++){
+            if(isset($json->queryResult->outputContexts[$i]->parameters->key)){
+                $cbkey = $json->queryResult->outputContexts[$i]->parameters->key;
+            }
+            else{
+                continue;
+            }
+        }
+        $querykey = "select * from empmaster where cbkey = '$cbkey'";
+        $resultkey = mysqli_query($conn, $querykey);
+        $rowkey = mysqli_fetch_assoc($resultkey);
+        $uname = "$rowkey[EmployeeID]";
         $type = $json->queryResult->outputContexts[1]->parameters->type;
         $from = $json->queryResult->outputContexts[1]->parameters->from;
         $from = substr($from, 0, 10);
@@ -300,13 +307,17 @@ if($method == 'POST') {
         }
     }  else if (strcmp("apply", $flag) == 0) {
         for($i=0;$i<=sizeof($json->queryResult->outputContexts);$i++){
-            if(isset($json->queryResult->outputContexts[$i]->parameters->eid)){
-                $uname = $json->queryResult->outputContexts[$i]->parameters->eid;
+            if(isset($json->queryResult->outputContexts[$i]->parameters->key)){
+                $cbkey = $json->queryResult->outputContexts[$i]->parameters->key;
             }
             else{
                 continue;
             }
         }
+        $querykey = "select * from empmaster where cbkey = '$cbkey'";
+        $resultkey = mysqli_query($conn, $querykey);
+        $rowkey = mysqli_fetch_assoc($resultkey);
+        $uname = "$rowkey[EmployeeID]";
         $from = $json->queryResult->outputContexts[0]->parameters->from;
         $remark = $json->queryResult->outputContexts[0]->parameters->any;
         $from = substr($from, 0, 10);
@@ -388,13 +399,17 @@ if($method == 'POST') {
     else if(strcmp("withdraw",$flag)==0){
         $speech = "";
         for($i=0;$i<=sizeof($json->queryResult->outputContexts);$i++){
-            if(isset($json->queryResult->outputContexts[$i]->parameters->eid)){
-                $uname = $json->queryResult->outputContexts[$i]->parameters->eid;
+            if(isset($json->queryResult->outputContexts[$i]->parameters->key)){
+                $cbkey = $json->queryResult->outputContexts[$i]->parameters->key;
             }
             else{
                 continue;
             }
         }
+        $querykey = "select * from empmaster where cbkey = '$cbkey'";
+        $resultkey = mysqli_query($conn, $querykey);
+        $rowkey = mysqli_fetch_assoc($resultkey);
+        $uname = "$rowkey[EmployeeID]";
 
         $chkquery = "select * from empleavehistory where EmpID = '$uname' AND Status = 'Pending Approval'";
         $result = mysqli_query($conn, $chkquery);
@@ -432,13 +447,17 @@ if($method == 'POST') {
     else if(strcmp("pending",$flag)==0){
         $speech = "";
         for($i=0;$i<=sizeof($json->queryResult->outputContexts);$i++){
-            if(isset($json->queryResult->outputContexts[$i]->parameters->eid)){
-                $uname = $json->queryResult->outputContexts[$i]->parameters->eid;
+            if(isset($json->queryResult->outputContexts[$i]->parameters->key)){
+                $cbkey = $json->queryResult->outputContexts[$i]->parameters->key;
             }
             else{
                 continue;
             }
         }
+        $querykey = "select * from empmaster where cbkey = '$cbkey'";
+        $resultkey = mysqli_query($conn, $querykey);
+        $rowkey = mysqli_fetch_assoc($resultkey);
+        $uname = "$rowkey[EmployeeID]";
         $chkquery = "select * from empleavehistory where RMID = '$uname' AND Status = 'Pending Approval'";
         $result = mysqli_query($conn, $chkquery);
         if (mysqli_num_rows($result) > 0) {
@@ -511,13 +530,17 @@ if($method == 'POST') {
         }}
     else if(strcmp("ltype",$flag)==0){
         for($i=0;$i<=sizeof($json->queryResult->outputContexts);$i++){
-            if(isset($json->queryResult->outputContexts[$i]->parameters->eid)){
-                $uname = $json->queryResult->outputContexts[$i]->parameters->eid;
+            if(isset($json->queryResult->outputContexts[$i]->parameters->key)){
+                $cbkey = $json->queryResult->outputContexts[$i]->parameters->key;
             }
             else{
                 continue;
             }
         }
+        $querykey = "select * from empmaster where cbkey = '$cbkey'";
+        $resultkey = mysqli_query($conn, $querykey);
+        $rowkey = mysqli_fetch_assoc($resultkey);
+        $uname = "$rowkey[EmployeeID]";
         $chkquery = "select * from empleavebalance where EmpID = '$uname'";
         $result = mysqli_query($conn, $chkquery);
         if (mysqli_num_rows($result) > 0) {
@@ -532,7 +555,7 @@ if($method == 'POST') {
             $response->fulfillmentMessages = array(
                 array(
                     "text" => array(
-                        "text" => array("Enter Leave Details",$speech1)
+                        "text" => array("What type of Leave do you Want",$speech1)
                     )
                 )
             );
