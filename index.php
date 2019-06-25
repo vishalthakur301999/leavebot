@@ -206,7 +206,7 @@ if($method == 'POST') {
                 continue;
             }
         }
-        $querykey = "select * from empmaster where EmployeeID = '$eid' and cbkey = '$cbkey'";
+        $querykey = "select * from empmaster where EmployeeID = '$uname' and cbkey = '$cbkey'";
         $resultkey = mysqli_query($conn, $querykey);
         if (mysqli_num_rows($resultkey) > 0) {
             $chkquery = "select * from empleavebalance where EmpID = '$uname'";
