@@ -80,10 +80,45 @@ if($method == 'POST') {
     $json = json_decode($requestBody);
     $flag = "";
     $flag = $json->queryResult->outputContexts[0]->parameters->flag;
-    if (strcmp("login", $flag) == 0) {
+    if (strcmp("cbkey", $flag) == 0) {
+        for($i=0;$i<=sizeof($json->queryResult->outputContexts);$i++){
+            if(isset($json->queryResult->outputContexts[$i]->parameters->key)){
+                $cbkey = $json->queryResult->outputContexts[$i]->parameters->key;
+            }
+            else{
+                continue;
+            }
+        }
+        $query = "select * from empmaster where cbkey = '$cbkey'";
+        $result = mysqli_query($conn, $query);
+        if (mysqli_num_rows($result) > 0) {
+            $row = mysqli_fetch_assoc($result);
+            $speech1 = "Key Authenticated";
+            $response = new \stdClass();
+            $response->fulfillmentText = $speech1;
+            $response->source = "webhook";
+            echo json_encode($response);
+            }
+       else {
+            $speech1 = "Invalid key";
+            $response = new \stdClass();
+            $response->fulfillmentText = $speech1;
+            $response->source = "webhook";
+            echo json_encode($response);
+        }
+    }
+    else if (strcmp("login", $flag) == 0) {
         $eid = "";
         $eid = $json->queryResult->outputContexts[0]->parameters->eid;
-        $query = "select * from empmaster where EmployeeID = '$eid'";
+        for($i=0;$i<=sizeof($json->queryResult->outputContexts);$i++){
+            if(isset($json->queryResult->outputContexts[$i]->parameters->key)){
+                $cbkey = $json->queryResult->outputContexts[$i]->parameters->key;
+            }
+            else{
+                continue;
+            }
+        }
+        $query = "select * from empmaster where EmployeeID = '$eid' and cbkey = '$cbkey'";
         $result = mysqli_query($conn, $query);
         if (mysqli_num_rows($result) > 0) {
             while ($row = mysqli_fetch_assoc($result)){
@@ -148,12 +183,13 @@ if($method == 'POST') {
                 }
             }
         } else {
-            $speech1 = "Invalid user";
+            $speech1 = "Unable to Log into other account";
             $response = new \stdClass();
             $response->fulfillmentText = $speech1;
             $response->source = "webhook";
             echo json_encode($response);
-        }}else if (strcmp("check", $flag) == 0) {
+        }
+    }else if (strcmp("check", $flag) == 0) {
         for($i=0;$i<=sizeof($json->queryResult->outputContexts);$i++){
             if(isset($json->queryResult->outputContexts[$i]->parameters->eid)){
                 $uname = $json->queryResult->outputContexts[$i]->parameters->eid;
