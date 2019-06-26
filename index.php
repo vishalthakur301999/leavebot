@@ -292,6 +292,7 @@ if($method == 'POST') {
             }
         }
         if($i==1){
+            if($dateDiff>0){
             $speech1 = "Confirm Leave of $dateDiff day/s?";
             $response = new \stdClass();
             $response->fulfillmentText = $speech1;
@@ -304,6 +305,21 @@ if($method == 'POST') {
             );
             $response->source = "webhook";
             echo json_encode($response);
+            }
+            else{
+                 $speech1 = "You have applied Leave on non-working day(s)";
+            $response = new \stdClass();
+            $response->fulfillmentText = $speech1;
+            $response->fulfillmentMessages = array(
+                array(
+                    "text" => array(
+                        "text" => array($speech1,"Apply Leave")
+                    )
+                )
+            );
+            $response->source = "webhook";
+            echo json_encode($response);
+            }
         }
     }  else if (strcmp("apply", $flag) == 0) {
         for($i=0;$i<=sizeof($json->queryResult->outputContexts);$i++){
@@ -522,10 +538,18 @@ if($method == 'POST') {
                     die('Invalid query: ' . mysqli_error($conn));
                 }
                 $speech1 = "Withdrawal Successfull!";
-                $response = new \stdClass();
-                $response->fulfillmentText = $speech1;
-                $response->source = "webhook";
-                echo json_encode($response);
+                
+            $response->fulfillmentText = $speech1;
+            $response->fulfillmentMessages = array(
+                array(
+                    "text" => array(
+                        "text" => array($speech1,"Apply Leave,Withdraw Leave,Check Leave Balance")
+                    )
+                )
+            );
+            $response->source = "webhook";
+            echo json_encode($response);
+                
             }
         }}
     else if(strcmp("ltype",$flag)==0){
