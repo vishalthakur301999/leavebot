@@ -113,6 +113,7 @@ if($method == 'POST') {
         for($i=0;$i<=sizeof($json->queryResult->outputContexts);$i++){
             if(isset($json->queryResult->outputContexts[$i]->parameters->key)){
                 $cbkey = $json->queryResult->outputContexts[$i]->parameters->key;
+                $cbkey = trim($cbkey);
             }
             else{
                 continue;
@@ -201,6 +202,7 @@ if($method == 'POST') {
         for($i=0;$i<=sizeof($json->queryResult->outputContexts);$i++){
             if(isset($json->queryResult->outputContexts[$i]->parameters->key)){
                 $cbkey = $json->queryResult->outputContexts[$i]->parameters->key;
+                $cbkey = trim($cbkey);
             }
             else{
                 continue;
