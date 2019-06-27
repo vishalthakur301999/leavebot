@@ -553,43 +553,47 @@ if($method == 'POST') {
             }
         }}
     else if(strcmp("ltype",$flag)==0){
-        for($i=0;$i<=sizeof($json->queryResult->outputContexts);$i++){
-            if(isset($json->queryResult->outputContexts[$i]->parameters->key)){
+        for ($i = 0; $i <= sizeof($json->queryResult->outputContexts); $i++) {
+            if (isset($json->queryResult->outputContexts[$i]->parameters->key)) {
                 $cbkey = $json->queryResult->outputContexts[$i]->parameters->key;
-            }
-            else{
+            } else {
                 continue;
             }
         }
-        for($i=0;$i<=sizeof($json->queryResult->outputContexts);$i++){
-            if(isset($json->queryResult->outputContexts[$i]->parameters->type)){
+        for ($i = 0; $i <= sizeof($json->queryResult->outputContexts); $i++) {
+            if (isset($json->queryResult->outputContexts[$i]->parameters->type)) {
                 $type = $json->queryResult->outputContexts[$i]->parameters->type;
-            }
-            else{
+            } else {
                 continue;
             }
         }
-        for($i=0;$i<=sizeof($json->queryResult->outputContexts);$i++){
-            if(isset($json->queryResult->outputContexts[$i]->parameters->from)){
+        for ($i = 0; $i <= sizeof($json->queryResult->outputContexts); $i++) {
+            if (isset($json->queryResult->outputContexts[$i]->parameters->from)) {
                 $from = $json->queryResult->outputContexts[$i]->parameters->from;
-            }
-            else{
+                if(strcmp("",$from)!=0){
+                    $from = substr($from, 0, 10);
+                }
+            } else {
                 continue;
             }
         }
-        for($i=0;$i<=sizeof($json->queryResult->outputContexts);$i++){
-            if(isset($json->queryResult->outputContexts[$i]->parameters->to)){
+        for ($i = 0; $i <= sizeof($json->queryResult->outputContexts); $i++) {
+            if (isset($json->queryResult->outputContexts[$i]->parameters->to)) {
                 $to = $json->queryResult->outputContexts[$i]->parameters->to;
-            }
-            else{
+                if(strcmp("",$to)!=0){
+                    $to = substr($to, 0, 10);
+                }
+            } else {
                 continue;
             }
         }
-        for($i=0;$i<=sizeof($json->queryResult->outputContexts);$i++){
-            if(isset($json->queryResult->outputContexts[$i]->parameters->oneday)){
+        for ($i = 0; $i <= sizeof($json->queryResult->outputContexts); $i++) {
+            if (isset($json->queryResult->outputContexts[$i]->parameters->oneday)) {
                 $oneday = $json->queryResult->outputContexts[$i]->parameters->oneday;
-            }
-            else{
+                if(strcmp("",$oneday)!=0){
+                    $oneday = substr($oneday, 0, 10);
+                }
+            } else {
                 continue;
             }
         }
