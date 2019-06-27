@@ -599,19 +599,21 @@ if($method == 'POST') {
         $uname = "$rowkey[EmployeeID]";
         $chkquery = "select * from empleavebalance where EmpID = '$uname'";
         $result = mysqli_query($conn, $chkquery);
-        if (mysqli_num_rows($result) > 0) {
+         if (mysqli_num_rows($result) > 0) {
             $speech1 = "";
             while ($row = mysqli_fetch_assoc($result)) {
-                if(intval("$row[Balance]")>0){
-                $speech1 = $speech1." $row[LeaveType]".":"." $row[Balance]".", ";}
+                if (intval("$row[Balance]") > 0) {
+                    $speech1 = $speech1 . " $row[LeaveType]" . ":" . " $row[Balance]" . ", ";
+                }
             }
-            $speech1 = substr($speech1,0,-2);
+            $speech1 = substr($speech1, 0, -2);
+            $speech1 = $speech1 . "#" . $type . "," . $from . "," . $to . "," . $oneday;
             $response = new \stdClass();
             $response->fulfillmentText = $speech1;
             $response->fulfillmentMessages = array(
                 array(
                     "text" => array(
-                        "text" => array("Enter leave details",$speech1,$type,$from,$to,$oneday)
+                        "text" => array("Enter leave details", $speech1)
                     )
                 )
             );
