@@ -561,6 +561,38 @@ if($method == 'POST') {
                 continue;
             }
         }
+        for($i=0;$i<=sizeof($json->queryResult->outputContexts);$i++){
+            if(isset($json->queryResult->outputContexts[$i]->parameters->type)){
+                $type = $json->queryResult->outputContexts[$i]->parameters->type;
+            }
+            else{
+                continue;
+            }
+        }
+        for($i=0;$i<=sizeof($json->queryResult->outputContexts);$i++){
+            if(isset($json->queryResult->outputContexts[$i]->parameters->from)){
+                $from = $json->queryResult->outputContexts[$i]->parameters->from;
+            }
+            else{
+                continue;
+            }
+        }
+        for($i=0;$i<=sizeof($json->queryResult->outputContexts);$i++){
+            if(isset($json->queryResult->outputContexts[$i]->parameters->to)){
+                $to = $json->queryResult->outputContexts[$i]->parameters->to;
+            }
+            else{
+                continue;
+            }
+        }
+        for($i=0;$i<=sizeof($json->queryResult->outputContexts);$i++){
+            if(isset($json->queryResult->outputContexts[$i]->parameters->oneday)){
+                $oneday = $json->queryResult->outputContexts[$i]->parameters->oneday;
+            }
+            else{
+                continue;
+            }
+        }
         $querykey = "select * from empmaster where cbkey = '$cbkey'";
         $resultkey = mysqli_query($conn, $querykey);
         $rowkey = mysqli_fetch_assoc($resultkey);
@@ -579,7 +611,7 @@ if($method == 'POST') {
             $response->fulfillmentMessages = array(
                 array(
                     "text" => array(
-                        "text" => array("Enter leave details",$speech1)
+                        "text" => array("Enter leave details",$speech1,$type,$from,$to,$oneday)
                     )
                 )
             );
